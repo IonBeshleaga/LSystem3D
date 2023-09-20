@@ -4,6 +4,7 @@
 #include "../VBO/VBO.h"
 
 class VAO {
+public:	
 	GLuint ID;
 
 	VAO();

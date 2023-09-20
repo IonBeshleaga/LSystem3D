@@ -92,8 +92,10 @@
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\EBO\EBO.cpp" />
+    <ClCompile Include="src\LSystem\LSystem.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Model\Mesh.cpp" />
+    <ClCompile Include="src\Model\Model.cpp" />
     <ClCompile Include="src\ShaderProgram\Shader.cpp" />
     <ClCompile Include="src\Texture\Texture.cpp" />
     <ClCompile Include="src\VAO\VAO.cpp" />
@@ -102,12 +104,18 @@
   <ItemGroup>
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\EBO\EBO.h" />
+    <ClInclude Include="src\LSystem\LSystem.h" />
     <ClInclude Include="src\Model\Mesh.h" />
+    <ClInclude Include="src\Model\Model.h" />
     <ClInclude Include="src\ShaderProgram\Shader.h" />
-    <ClInclude Include="src\stb\stb_image.cpp" />
+    <ClCompile Include="src\stb\stb_image.cpp" />
     <ClInclude Include="src\Texture\Texture.h" />
     <ClInclude Include="src\VAO\VAO.h" />
     <ClInclude Include="src\VBO\VBO.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shader.frag" />
+    <None Include="res\shader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

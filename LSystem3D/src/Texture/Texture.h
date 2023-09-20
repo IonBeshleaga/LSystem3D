@@ -6,7 +6,6 @@
 #include <stb/stb_image.h>
 #include "../ShaderProgram/Shader.h"
 
-
 class Texture {
 public:
 	GLuint ID;

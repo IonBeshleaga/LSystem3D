@@ -7,6 +7,8 @@ Camera::Camera(int width, int height, glm::vec3 position) {
 	this->Position = position;
 
 	lastTime = glfwGetTime();
+	currentTime = 0;
+	deltaTime = 0;
 }
 
 void Camera::Update(float FOVdeg, float nearPlane, float farPlane) {
@@ -28,7 +30,8 @@ void Camera::Input(GLFWwindow* window) {
 	currentTime = glfwGetTime();
 	deltaTime = currentTime - lastTime;
 	lastTime = currentTime;
-	std::cout << deltaTime << std::endl;
+	
+
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		Position += speed * Orientation * deltaTime;
 	}

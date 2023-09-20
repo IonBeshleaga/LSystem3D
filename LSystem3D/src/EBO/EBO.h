@@ -2,8 +2,8 @@
 #define EBO_CLASS_H
 
 #include "../VBO/VBO.h"
-
 class EBO {
+public:
 	GLuint ID;
 	EBO(std::vector<GLuint>& indices);
 	~EBO();

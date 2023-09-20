@@ -28,7 +28,7 @@ public:
 	float speedShift = 40.f;
 
 	float speed = speedNormal;
-	float sensitivity = 15000.f;
+	float sensitivity = 1000.f;
 
 	float lastTime, currentTime, deltaTime;
 

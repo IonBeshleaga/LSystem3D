@@ -14,7 +14,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vecto
 	VAO.LinkAttrib(VBO, 0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, normals)));
 	VAO.LinkAttrib(VBO, 2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, color)));
-	VAO.LinkAttrib(VBO, 3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, TexUV)));
+	VAO.LinkAttrib(VBO, 3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, texUV)));
 
 	VAO.Unbind();
 
@@ -22,8 +22,6 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vecto
 
 	EBO.Unbind();
 
-	VBO.Delete();
-	EBO.Delete();
 
 }
 
@@ -52,7 +50,7 @@ void Mesh::Draw(Shader& shader, Camera& camera) {
 		textures[i].Bind();
 	}
 	camera.Matrix(shader, "camMatrix");
-	shader.setVec3f("camPos", camera.Position.x, camera.Position.y, camera.Position.z);
+	//shader.setVec3f("camPos", camera.Position.x, camera.Position.y, camera.Position.z);
 
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
 }

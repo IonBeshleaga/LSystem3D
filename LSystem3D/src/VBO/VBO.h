@@ -10,8 +10,8 @@
 struct Vertex {	
 	glm::vec3 position;
 	glm::vec3 normals;
-	glm::vec3 colors;
-	glm::vec3 texUv;
+	glm::vec3 color;
+	glm::vec2 texUV;
 };
 
 class VBO {

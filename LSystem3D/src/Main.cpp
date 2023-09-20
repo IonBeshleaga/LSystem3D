@@ -1,8 +1,4 @@
-#include <iostream>
-
-#define GLEW_STATIC
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "../src/Model/Model.h"
 
 int main() {
 
@@ -45,15 +41,50 @@ int main() {
 	}
 	
 
+	Shader shaderProgram("res/shader.vert", "res/shader.frag");
+	Camera camera(WIN_WIDTH, WIN_HEIGHT, glm::vec3(0,0,5));
+
+	std::vector<Vertex> line = {
+		{glm::vec3(0.5,0.5, 0.0f), glm::vec3(0,0,0), glm::vec3(1,0,0), glm::vec2(0,0)},
+		{glm::vec3(-0.5, -0.5, 0.0f), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec2(0, 0)},
+		{glm::vec3(0.5, -0.5, 0.0f), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), glm::vec2(0, 0)}
+	};
+
+	std::vector<GLuint> indices = {
+		0,1,1,2
+	};
+
+	std::vector<Texture> textures ;
+
+
+	Mesh mesh(line, indices, textures);
+	glm::mat4 model = glm::mat4(1.f);
+	
+	shaderProgram.Activate();
+	
 	//main loop
-	glClearColor(1, 0, 0, 1);
+	glClearColor(0, 0, 0, 1);
 	while (!glfwWindowShouldClose(window)) {
+			
+		camera.Input(window);
+		camera.Update(45, 0.1, 100);
+		//camera.Matrix(shaderProgram, "camMatrix");
+
+		//model = glm::rotate(model, glm::radians(5.f) * (float)glfwGetTime(), glm::vec3(1, 0, 0));
+		shaderProgram.setMat4f("modelMatrix", 1, GL_FALSE, glm::value_ptr(model));
+
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glfwSwapBuffers(window);
 
+		mesh.Draw(shaderProgram, camera);
+
+		glfwSwapBuffers(window);
+				
 		glfwPollEvents();
 	}
+
+	shaderProgram.Delete();
+	
 
 	//deinit window and glfw
 	glfwDestroyWindow(window);
