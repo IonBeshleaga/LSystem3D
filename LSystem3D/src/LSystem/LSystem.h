@@ -5,8 +5,10 @@
 #include <string>
 #include <map>
 #include <stack>
+#include <math.h>
 
 struct stack_data {
+	glm::vec3 pos;
 	GLuint indices;
 	float angle;
 };
@@ -18,10 +20,12 @@ public:
 	std::map<char, std::string> rules;
 	std::stack<stack_data> stk;
 	int ls_iteration;
-	
+
 	float length;
 	float angle;
-
+	float start_angle;
+	glm::vec3 start_pos;
+	
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
 
@@ -33,6 +37,6 @@ public:
 	void GenerateLSystemMesh();
 	std::vector<Vertex> getVertices();
 	std::vector<GLuint> getIndices();
-}
+};
 
 #endif

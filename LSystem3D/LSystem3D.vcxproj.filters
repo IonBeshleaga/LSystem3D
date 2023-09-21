@@ -82,4 +82,7 @@
     <None Include="res\shader.frag" />
     <None Include="res\shader.vert" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="TASKS.txt" />
+  </ItemGroup>
 </Project>

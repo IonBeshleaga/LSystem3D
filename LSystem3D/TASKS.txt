@@ -1,0 +1,17 @@
+-Abstract Window
+
+-Abstract EventSystem
+
+-Introduce GUI
+
+-Separate LSystenWord and LsystemMesh
+
+-Extend LSystem to 3d
+--Reading and writing configuration in file
+--Create "meal"
+
+
+-Introduce RuleSystem class with
+--Random angles
+--Randomized rules
+--Reading and writing configuration in file
