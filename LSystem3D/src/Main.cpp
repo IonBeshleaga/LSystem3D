@@ -1,4 +1,5 @@
 #include "../src/Model/Model.h"
+#include "LSystem/LSystem.h"
 
 int main() {
 
@@ -46,12 +47,13 @@ int main() {
 
 	std::vector<Vertex> line = {
 		{glm::vec3(0.5,0.5, 0.0f), glm::vec3(0,0,0), glm::vec3(1,0,0), glm::vec2(0,0)},
-		{glm::vec3(-0.5, -0.5, 0.0f), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec2(0, 0)},
-		{glm::vec3(0.5, -0.5, 0.0f), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), glm::vec2(0, 0)}
+		{glm::vec3(0.5, -0.5, 0.0f), glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), glm::vec2(0, 0)},
+		{glm::vec3(-0.5, -0.5, 0.0f), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0), glm::vec2(0, 0)},
+		{glm::vec3(-0.5, 0.5, 0.0f), glm::vec3(0, 0, 0), glm::vec3(0, 1, 1), glm::vec2(0, 0)}
 	};
 
 	std::vector<GLuint> indices = {
-		0,1,1,2
+		0,1,2,3
 	};
 
 	std::vector<Texture> textures ;
@@ -62,6 +64,9 @@ int main() {
 	
 	shaderProgram.Activate();
 	
+	LSystem ls;
+	ls.GenerateLSystem();
+
 	//main loop
 	glClearColor(0, 0, 0, 1);
 	while (!glfwWindowShouldClose(window)) {
