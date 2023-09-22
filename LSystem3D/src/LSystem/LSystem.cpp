@@ -3,22 +3,22 @@
 #include <iostream>
 
 LSystem::LSystem() {
-	axiom = "A";
+	axiom = "BBBBA";
 	rules['A'] = "B[-A]+A";
-	rules['B'] = "BB";
+	rules['B'] = "B";
 	rules['['] = "[";
 	rules[']'] = "]";
 	rules['-'] = "-";
-	rules['+'] = "+";
+	rules['+'] = "+"; 
 
 	lsystem_word = axiom;
 
 	ls_iteration = 5;
-	length = 0.05;
-	angle = 45.f;
+	length = 0.5;
+	angle = 35.f;
 
 	start_angle = 90.f;
-	start_pos = glm::vec3(0.5, 0.95, 0);
+	start_pos = glm::vec3(0, -1, 0);
 
 }
 

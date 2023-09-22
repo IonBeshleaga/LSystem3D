@@ -93,6 +93,7 @@
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\EBO\EBO.cpp" />
     <ClCompile Include="src\LSystem\LSystem.cpp" />
+    <ClCompile Include="src\LSystem\Rules\RulesConfiguration.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Model\Mesh.cpp" />
     <ClCompile Include="src\Model\Model.cpp" />
@@ -105,6 +106,10 @@
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\EBO\EBO.h" />
     <ClInclude Include="src\LSystem\LSystem.h" />
+    <ClInclude Include="src\LSystem\Rules\CRule.h" />
+    <ClInclude Include="src\LSystem\Rules\MRule.h" />
+    <ClInclude Include="src\LSystem\Rules\RulesConfiguration.h" />
+    <ClInclude Include="src\LSystem\Rules\WRule.h" />
     <ClInclude Include="src\Model\Mesh.h" />
     <ClInclude Include="src\Model\Model.h" />
     <ClInclude Include="src\ShaderProgram\Shader.h" />
