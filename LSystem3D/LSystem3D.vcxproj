@@ -106,10 +106,7 @@
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\EBO\EBO.h" />
     <ClInclude Include="src\LSystem\LSystem.h" />
-    <ClInclude Include="src\LSystem\Rules\CRule.h" />
-    <ClInclude Include="src\LSystem\Rules\MRule.h" />
     <ClInclude Include="src\LSystem\Rules\RulesConfiguration.h" />
-    <ClInclude Include="src\LSystem\Rules\WRule.h" />
     <ClInclude Include="src\Model\Mesh.h" />
     <ClInclude Include="src\Model\Model.h" />
     <ClInclude Include="src\ShaderProgram\Shader.h" />
@@ -121,6 +118,7 @@
   <ItemGroup>
     <None Include="res\shader.frag" />
     <None Include="res\shader.vert" />
+    <None Include="res\test.wconfig" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TASKS.txt" />

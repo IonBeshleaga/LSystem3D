@@ -2,10 +2,12 @@
 #define LSYSTEM_CLASS_H
 
 #include "../VBO/VBO.h"
+#include "Rules/RulesConfiguration.h"
 #include <string>
 #include <map>
 #include <stack>
 #include <math.h>
+
 
 struct stack_data {
 	glm::vec3 pos;
@@ -28,6 +30,8 @@ public:
 	
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
+
+	RulesConfiguration rconfig;
 
 	LSystem();
 	~LSystem();
