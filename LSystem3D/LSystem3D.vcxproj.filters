@@ -48,6 +48,12 @@
     <ClCompile Include="src\LSystem\LSystem.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\LSystem\Configuration\RulesConfiguration.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LSystem\Configuration\MeshConfiguration.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Model\Mesh.h">
@@ -77,10 +83,17 @@
     <ClInclude Include="src\LSystem\LSystem.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="src\LSystem\Configuration\RulesConfiguration.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LSystem\Configuration\MeshConfiguration.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader.frag" />
     <None Include="res\shader.vert" />
+    <None Include="res\test.wconfig" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TASKS.txt" />

@@ -1,11 +1,9 @@
 #include "RulesConfiguration.h"
 
 
-RulesConfiguration::RulesConfiguration(std::string lsystem_path, std::string mesh_path, std::string color_path) {
+RulesConfiguration::RulesConfiguration(std::string path) {
 	
-	load_lsystem_config(lsystem_path);
-	/*load_lsystem_config(mesh_path);
-	load_lsystem_config(color_path);*/
+	load_config(path);
 	
 }
 
@@ -36,16 +34,9 @@ std::string RulesConfiguration::getWRule(char symbol) {
 
 	return wrules[symbol].rules[slot] ;
 }
-/*
-mrule_data RulesConfiguration::getMRule(char symbol) {
 
-}
 
-glm::vec3 RulesConfiguration::getCRule(char symbol) {
-
-}
-*/
-void RulesConfiguration::load_lsystem_config(std::string path) {
+void RulesConfiguration::load_config(std::string path) {
 	int num_of_sym, num_of_rules;
 	float chance;
 	char symbol;
@@ -79,14 +70,6 @@ void RulesConfiguration::load_lsystem_config(std::string path) {
 	std::cout << "iterattion " << iteration << std::endl;
 	std::cout << "axiom " << axiom << std::endl;
 	std::cout << "Size of map " << wrules.size() << std::endl;
-
-}
-
-void RulesConfiguration::load_mesh_config(std::string path) {
-
-}
-
-void RulesConfiguration::load_color_config(std::string path) {
 
 }
 

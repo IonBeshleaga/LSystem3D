@@ -2,7 +2,8 @@
 #define LSYSTEM_CLASS_H
 
 #include "../VBO/VBO.h"
-#include "Rules/RulesConfiguration.h"
+#include "Configuration/RulesConfiguration.h"
+#include "Configuration/MeshConfiguration.h"
 #include <string>
 #include <map>
 #include <stack>
