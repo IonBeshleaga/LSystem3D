@@ -1,8 +1,8 @@
 #include "../src/Model/Model.h"
-#include "LSystem/LSystem.h"
+#include "LSystem/MeshGenerator.h"
 
 int main() {
-
+	srand(time(NULL));
 	//window data
 	const int WIN_WIDTH = 800;
 	const int WIN_HEIGHT = 600;
@@ -47,17 +47,16 @@ int main() {
 
 
 	LSystem ls;
+	MeshGenerator mg;
+
+	ls.load_lsystem_configuration("res/test.wconfig");
 	ls.GenerateLSystem();
 	
-	std::vector<Vertex> line = ls.getVertices();
-
-	std::vector<GLuint> indices = ls.getIndices();
-
-	std::vector<Texture> textures ;
+	mg.load_mesh_configuration("res/test.mconfig", "res/test.cconfig");
+	mg.GenerateMesh(ls.getLSystem());
 
 
-
-	Mesh mesh(line, indices, textures);
+	Mesh mesh = mg.getMesh();
 	glm::mat4 model = glm::mat4(1.f);
 	
 	shaderProgram.Activate();

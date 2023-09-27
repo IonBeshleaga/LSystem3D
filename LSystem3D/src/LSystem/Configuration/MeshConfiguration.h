@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <fstream>
 #include <glm/glm.hpp>
 
 enum MRuleType { stack, branch, rotate };
@@ -13,7 +14,7 @@ struct MRule {
 	std::vector<float> data;
 };
 
-struct Crule {
+struct CRule {
 	std::vector<glm::vec3> color;
 	std::vector<float> chances;
 };
@@ -21,7 +22,7 @@ struct Crule {
 class MeshConfiguration {
 public:
 	std::map<char, MRule> mrules;
-	std::map<char, Crule> Crules;
+	std::map<char, CRule> crules;
 
 	glm::vec3 start_pos;
 	float start_angle;

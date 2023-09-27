@@ -37,12 +37,14 @@ std::string RulesConfiguration::getWRule(char symbol) {
 
 
 void RulesConfiguration::load_config(std::string path) {
+	std::ifstream in(path);
+	
 	int num_of_sym, num_of_rules;
 	float chance;
 	char symbol;
 	std::vector<std::string> rules;
 	std::vector<float> chances;
-	std::ifstream in(path);
+	
 	
 	in >> iteration;
 	in >> axiom;
