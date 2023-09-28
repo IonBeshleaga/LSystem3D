@@ -23,7 +23,7 @@ void LSystem::GenerateLSystem() {
 			tmp += rconfig.getWRule(lsystem_word[i]);
 		}
 		lsystem_word = tmp;
-		std::cout << "Iteration " << k << std::endl << lsystem_word << std::endl;
+	
 		
 	}
 }

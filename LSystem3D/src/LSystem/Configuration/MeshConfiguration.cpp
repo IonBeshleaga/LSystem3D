@@ -44,6 +44,7 @@ void MeshConfiguration::load_mesh_config(std::string path) {
 	in >> start_angle;
 	in >> num_of_sym;
 
+
 	for (int i = 0; i < num_of_sym; i++) {
 		in >> symbol;
 		in >> type;
@@ -62,6 +63,7 @@ void MeshConfiguration::load_mesh_config(std::string path) {
 			in >> v[0];
 			mrules.insert(std::make_pair(symbol, MRule{ branch, v }));
 		}
+
 	}
 
 }
@@ -69,11 +71,15 @@ void MeshConfiguration::load_mesh_config(std::string path) {
 
 void MeshConfiguration::load_color_config(std::string path) {
 	std::ifstream in(path);
-	int num_of_sym, num_of_colors,chance;
+	int num_of_sym, num_of_colors;
+	float chance;
 	char symbol;
 	std::vector<glm::vec3> colors;
 	std::vector<float> chances;
 	in >> num_of_sym;
+
+
+
 	for (int i = 0; i < num_of_sym; i++) {
 		in >> symbol;
 		in >> num_of_colors;
@@ -85,8 +91,10 @@ void MeshConfiguration::load_color_config(std::string path) {
 			in >> colors[k].x >> colors[k].y >> colors[k].z;
 			in >> chance;
 			chances[k + 1] = chances[k] + chance;
+			colors[k] /= 255.f;
 		}
 		crules.insert(std::make_pair(symbol, CRule{ colors, chances }));
+
 	}
 }
 

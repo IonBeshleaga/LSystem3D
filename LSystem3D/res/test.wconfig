@@ -1,18 +1,19 @@
-2 
-BBBBA
+8
+BBBBBBBBA
 
 6 
 
 A
-	4 
-	[+BA]-BA 25.0 
-	[+A]-A 25.0 
-	A 25.0 
-	BBA 25.0 
+	2
+	[+BBA]-BBA 90
+	[+BA]-BA 10
+	
 B
-	2 
-	BB 50.0 
-	BBBB 50.0
+	3 
+	B 90
+	BB 5
+	A 5
+	
 +
 	1 
 	+ 100.0 
