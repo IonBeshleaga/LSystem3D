@@ -12,7 +12,6 @@ class LSystem {
 public:
 	std::string lsystem_word;
 	std::string axiom;
-	std::map<char, std::string> rules;
 	int ls_iteration;
 
 	float length;
@@ -29,6 +28,7 @@ public:
 	void load_lsystem_configuration(std::string lsystem_config_path);
 	void GenerateLSystem();
 	std::string getLSystem();
+
 };
 
 #endif

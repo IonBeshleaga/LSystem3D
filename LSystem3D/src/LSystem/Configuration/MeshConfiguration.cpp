@@ -1,6 +1,6 @@
 #include "MeshConfiguration.h"
 
-
+#include <iostream>
 
 MeshConfiguration::MeshConfiguration() {
 	start_pos = glm::vec3(0, 0, 0);
@@ -89,3 +89,4 @@ void MeshConfiguration::load_color_config(std::string path) {
 		crules.insert(std::make_pair(symbol, CRule{ colors, chances }));
 	}
 }
+

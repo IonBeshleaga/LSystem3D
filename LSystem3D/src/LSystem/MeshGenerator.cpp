@@ -31,7 +31,7 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 	vertices.push_back({ cur_pos, glm::vec3(0,0,0), glm::vec3(1,0,0), glm::vec2(0,0) });
 
 
-	for (int i = 1; i < lsystem.length(); i++) {
+	for (int i = 0; i < lsystem.length(); i++) {
 		//
 		MRule currentRule = mconfig.getMRule(lsystem[i]);
 

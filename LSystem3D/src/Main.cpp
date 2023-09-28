@@ -53,7 +53,7 @@ int main() {
 	ls.GenerateLSystem();
 	
 	mg.load_mesh_configuration("res/test.mconfig", "res/test.cconfig");
-	mg.GenerateMesh(ls.getLSystem());
+	/*mg.GenerateMesh(ls.getLSystem());
 
 
 	Mesh mesh = mg.getMesh();
@@ -62,6 +62,16 @@ int main() {
 	shaderProgram.Activate();
 	
 
+	std::cout << "Lsystem word " << ls.getLSystem() << std::endl;
+	std::cout << "Vertices of mesh " << std::endl;
+	for (int i = 0; i < mesh.vertices.size(); i++) {
+		std::cout << mesh.vertices[i].position.x << ' ' << mesh.vertices[i].position.y << ' ' << mesh.vertices[i].position.z << std::endl;
+		std::cout << mesh.vertices[i].color.x << ' ' << mesh.vertices[i].color.y << ' ' << mesh.vertices[i].color.z << std::endl << std::endl;
+	}
+	std::cout << "Indices of mesh" << std::endl;
+	for (int i = 0; i < mesh.indices.size(); i++) {
+		std::cout << mesh.indices[i] << ' ' << std::endl;
+	}
 	//main loop
 	glClearColor(0, 0, 0, 1);
 	while (!glfwWindowShouldClose(window)) {
@@ -82,13 +92,15 @@ int main() {
 				
 		glfwPollEvents();
 	}
-
+	*/
 	shaderProgram.Delete();
 	
 
 	//deinit window and glfw
 	glfwDestroyWindow(window);
 	glfwTerminate();
+
+	getchar();
 
 	return 0;
 }

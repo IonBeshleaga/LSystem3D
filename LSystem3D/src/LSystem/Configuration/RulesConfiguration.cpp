@@ -62,7 +62,7 @@ void RulesConfiguration::load_config(std::string path) {
 			in >> rules[k];
 			in >> chance;
 			chances[k + 1] = chances[k]+chance;
-			std::cout << symbol << " chance " << k << " " << chances[k + 1];
+			std::cout << symbol << " chance " << k << " " << chances[k + 1] << std::endl;
 		}
 
 		wrules.insert(std::make_pair(symbol, WRule{ rules, chances }));

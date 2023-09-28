@@ -33,6 +33,7 @@ public:
 
 	MRule getMRule(char symbol);
 	glm::vec3 getCRule(char symbol);
+
 private:
 	void load_mesh_config(std::string path);
 	void load_color_config(std::string path);
