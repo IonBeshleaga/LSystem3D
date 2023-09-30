@@ -1,18 +1,16 @@
-8
+6
 BBBBBBBBA
 
 6 
 
 A
-	2
-	[+BBA]-BBA 90
-	[+BA]-BA 10
+	1
+	[+BBA]-BBA 100
+	
 	
 B
-	3 
-	B 90
-	BB 5
-	A 5
+	1 
+	B 100
 	
 +
 	1 

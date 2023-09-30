@@ -25,8 +25,9 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 	GLuint cur_ind = 0;
 	GLuint last_ind = 0;
 	float cur_angle = start_angle;
+	float cur_angle_z = start_angle;
 	glm::vec3 cur_pos = start_pos;
-	float angle_rad;
+	float angle_rad, angle_rad_z, add_angle;
 
 	//vertices.push_back({ cur_pos, glm::vec3(0,0,0), glm::vec3(1,0,0), glm::vec2(0,0) });
 
@@ -38,13 +39,19 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 
 		if (currentRule.type == branch) {
 			angle_rad = glm::radians(cur_angle);
+			angle_rad_z = glm::radians(cur_angle_z);
+
+			float cur_cos = std::cos(angle_rad);
+			float cur_sin = std::sin(angle_rad);
+			float cur_cos_z = std::cos(angle_rad_z);
+			float cur_sin_z = std::sin(angle_rad_z);
 
 			float length = currentRule.data[0];
 			glm::vec3 curColor = mconfig.getCRule(lsystem[i]);
 
 			//std::cout << "Color " << color.x << ' ' << color.y << ' ' << color.z << std::endl;
 			if (!first) {
-				cur_pos += glm::vec3(length * std::cos(angle_rad), length * std::sin(angle_rad), 0);
+				cur_pos += glm::vec3(length * cur_cos_z*cur_cos, length * cur_sin_z, length*cur_cos_z*cur_sin);
 				vertices.push_back(Vertex{ cur_pos, glm::vec3(0,0,0),curColor, glm::vec2(0,0) });
 							
 				indices.push_back(last_ind);
@@ -54,7 +61,7 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			}
 			else {
 				vertices.push_back(Vertex{ cur_pos, glm::vec3(0,0,0),curColor, glm::vec2(0,0) });
-				cur_pos += glm::vec3(length * std::cos(angle_rad), length * std::sin(angle_rad), 0);
+				cur_pos += glm::vec3(length * cur_cos_z * cur_cos, length * cur_sin_z, length * cur_cos_z * cur_sin);
 				vertices.push_back(Vertex{ cur_pos, glm::vec3(0,0,0),curColor, glm::vec2(0,0) });
 				indices.push_back(last_ind);
 				indices.push_back(++cur_ind);
@@ -64,9 +71,10 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 
 		}
 		else if (currentRule.type == rotate) {
-			float add_angle = generateAnglesInRange(currentRule.data[0], currentRule.data[1]);
-			
+			add_angle = generateAnglesInRange(currentRule.data[0], currentRule.data[1]);
 			cur_angle += add_angle;
+			add_angle = generateAnglesInRange(currentRule.data[0], currentRule.data[1]);
+			cur_angle_z += add_angle;
 		}
 		else if (currentRule.type == stack) {
 			if (currentRule.data[0] == 0)
