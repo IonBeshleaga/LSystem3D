@@ -8,11 +8,16 @@
 #include "LSystem.h"
 #include "Configuration/MeshConfiguration.h"
 
+struct section {
+	std::vector<glm::vec3> positions;
+};
 
 struct stack_data {
 	glm::vec3 pos;
 	float angle;
-	GLuint indices;
+	GLuint skeleton_indice;
+	GLuint skin_indice;
+	section last_section;
 };
 
 class MeshGenerator {
@@ -24,16 +29,19 @@ public:
 	float start_angle;
 
 
-	std::vector<Vertex> vertices;
-	std::vector<GLuint> indices;
+	std::vector<Vertex> skeleton_vertices;
+	std::vector<GLuint> skeleton_indices;
+
+	std::vector<Vertex> skin_vertices;
+	std::vector<GLuint> skin_indices;
 
 	MeshGenerator();
 	~MeshGenerator();
 
 	void load_mesh_configuration(std::string mesh_config_path, std::string color_config_path);
 	void GenerateMesh(std::string lsystem);
-	Mesh getMesh();
-
+	Mesh getSkeletonMesh();
+	Mesh getSkinMesh();
 };
 
 #endif

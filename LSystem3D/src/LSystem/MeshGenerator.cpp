@@ -6,6 +6,10 @@ float generateAnglesInRange(float a, float b) {
 	return a + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (b - a)));
 }
 
+section generateSection(glm::vec3 pos) {
+	return section{};
+}
+
 MeshGenerator::MeshGenerator() {
 	start_angle = 0;
 	start_pos = glm::vec3(0, 0, 0);
@@ -22,11 +26,11 @@ void MeshGenerator::load_mesh_configuration(std::string mesh_config_path, std::s
 }
 
 void MeshGenerator::GenerateMesh(std::string lsystem) {
-	GLuint cur_ind = 0;
-	GLuint last_ind = 0;
+	GLuint cur_skeleton_ind = 0;
+	GLuint last_skeleton_ind = 0;
 	float cur_angle = start_angle;
 	float cur_angle_z = start_angle;
-	glm::vec3 cur_pos = start_pos;
+	glm::vec3 cur_skeleton_pos = start_pos;
 	float angle_rad, angle_rad_z, add_angle;
 
 	//vertices.push_back({ cur_pos, glm::vec3(0,0,0), glm::vec3(1,0,0), glm::vec2(0,0) });
@@ -51,21 +55,21 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 
 			//std::cout << "Color " << color.x << ' ' << color.y << ' ' << color.z << std::endl;
 			if (!first) {
-				cur_pos += glm::vec3(length * cur_cos_z*cur_cos, length * cur_sin_z, length*cur_cos_z*cur_sin);
-				vertices.push_back(Vertex{ cur_pos, glm::vec3(0,0,0),curColor, glm::vec2(0,0) });
+				cur_skeleton_pos += glm::vec3(length * cur_cos_z*cur_cos, length * cur_sin_z, length*cur_cos_z*cur_sin);
+				skeleton_vertices.push_back(Vertex{ cur_skeleton_pos, glm::vec3(0,0,0),curColor, glm::vec2(0,0) });
 							
-				indices.push_back(last_ind);
-				indices.push_back(++cur_ind);
-				last_ind = cur_ind;
+				skeleton_indices.push_back(last_skeleton_ind);
+				skeleton_indices.push_back(++cur_skeleton_ind);
+				last_skeleton_ind = cur_skeleton_ind;
 				
 			}
 			else {
-				vertices.push_back(Vertex{ cur_pos, glm::vec3(0,0,0),curColor, glm::vec2(0,0) });
-				cur_pos += glm::vec3(length * cur_cos_z * cur_cos, length * cur_sin_z, length * cur_cos_z * cur_sin);
-				vertices.push_back(Vertex{ cur_pos, glm::vec3(0,0,0),curColor, glm::vec2(0,0) });
-				indices.push_back(last_ind);
-				indices.push_back(++cur_ind);
-				last_ind = cur_ind;
+				skeleton_vertices.push_back(Vertex{ cur_skeleton_pos, glm::vec3(0,0,0),curColor, glm::vec2(0,0) });
+				cur_skeleton_pos += glm::vec3(length * cur_cos_z * cur_cos, length * cur_sin_z, length * cur_cos_z * cur_sin);
+				skeleton_vertices.push_back(Vertex{ cur_skeleton_pos, glm::vec3(0,0,0),curColor, glm::vec2(0,0) });
+				skeleton_indices.push_back(last_skeleton_ind);
+				skeleton_indices.push_back(++cur_skeleton_ind);
+				last_skeleton_ind = cur_skeleton_ind;
 				first = false;
 			}
 
@@ -78,18 +82,23 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 		}
 		else if (currentRule.type == stack) {
 			if (currentRule.data[0] == 0)
-				stk.push(stack_data{ cur_pos, cur_angle, cur_ind });
+				stk.push(stack_data{ cur_skeleton_pos, cur_angle_z, cur_skeleton_ind });
 			else {
-				cur_angle = stk.top().angle;
-				last_ind = stk.top().indices;
-				cur_pos = stk.top().pos;
+				cur_angle_z = stk.top().angle;
+				last_skeleton_ind = stk.top().skeleton_indice;
+				cur_skeleton_pos = stk.top().pos;
 				stk.pop();
 			}
 		}
 	}
 }
 
-Mesh MeshGenerator::getMesh() {
+Mesh MeshGenerator::getSkeletonMesh() {
 	std::vector<Texture> textures;
-	return Mesh(vertices, indices, textures);
+	return Mesh(skeleton_vertices, skeleton_indices, textures);
+}
+
+Mesh MeshGenerator::getSkinMesh() {
+	std::vector<Texture> textures;
+	return Mesh(skin_vertices, skin_indices, textures);
 }

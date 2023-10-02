@@ -56,7 +56,7 @@ int main() {
 	mg.GenerateMesh(ls.getLSystem());
 	
 
-	Mesh mesh = mg.getMesh();
+	Mesh mesh = mg.getSkeletonMesh();
 	glm::mat4 model = glm::mat4(1.f);
 	
 	shaderProgram.Activate();
@@ -73,7 +73,7 @@ int main() {
 		std::cout << mesh.indices[i] << ' ' << std::endl;
 	}*/
 	//main loop
-	glClearColor(0, 0, 0, 1);
+	glClearColor(0.26, 0.26, 0.28, 1);
 	while (!glfwWindowShouldClose(window)) {
 			
 		camera.Input(window);
