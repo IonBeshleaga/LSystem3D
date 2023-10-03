@@ -6,8 +6,37 @@ float generateAnglesInRange(float a, float b) {
 	return a + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (b - a)));
 }
 
-section generateSection(glm::vec3 pos) {
-	return section{};
+void generateSection(std::vector<Vertex>& v, glm::vec3 pos, int n, float length, float cur_angle, float cur_angle_z, glm::vec3 cur_color) {
+	float cur_in_angle = glm::radians(cur_angle);
+	cur_angle_z = glm::radians(cur_angle_z-90.f);
+	float in_angle = glm::radians(360.f / (float)n);
+	glm::vec3 new_pos;
+	for (int vertices = 0; vertices < n; vertices++, cur_in_angle += in_angle) {
+		float cur_cos_z = std::cos(cur_angle_z);
+		float cur_sin_z = std::sin(cur_angle_z);
+		float cur_cos = std::cos(cur_in_angle); 
+		float cur_sin = std::sin(cur_in_angle);
+
+		new_pos = pos + glm::vec3(cur_cos_z * cur_cos * length, cur_sin_z * length, cur_cos_z * cur_sin * length);
+		v.push_back({ new_pos, glm::vec3(0,0,0), cur_color, glm::vec2(0.0) });
+	}
+}
+
+GLuint generateIndicesForSection(std::vector<GLuint>& v, int n) {
+	GLuint start = v[v.size() - 1];
+	for (int i = 1; i <= n; i++) v.push_back(start + i);
+	return start + n;
+}
+
+void generateIndicesForBranch(std::vector<GLuint>& v, int indice, int n) {
+	int i;
+	for (i = indice; i < n - 1; i++) {
+		v.push_back(i); v.push_back(i+n); v.push_back(i+n+1);
+		v.push_back(i); v.push_back(i+n+1); v.push_back(i+1);
+	}
+	v.push_back(i); v.push_back(i+n);	v.push_back(i+1);
+	v.push_back(i); v.push_back(i+1);	v.push_back(i-n+1);
+
 }
 
 MeshGenerator::MeshGenerator() {
@@ -28,6 +57,7 @@ void MeshGenerator::load_mesh_configuration(std::string mesh_config_path, std::s
 void MeshGenerator::GenerateMesh(std::string lsystem) {
 	GLuint cur_skeleton_ind = 0;
 	GLuint last_skeleton_ind = 0;
+	GLuint last_skin_ind = 0;
 	float cur_angle = start_angle;
 	float cur_angle_z = start_angle;
 	glm::vec3 cur_skeleton_pos = start_pos;
@@ -61,15 +91,30 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 				skeleton_indices.push_back(last_skeleton_ind);
 				skeleton_indices.push_back(++cur_skeleton_ind);
 				last_skeleton_ind = cur_skeleton_ind;
+
+
+				generateSection(skin_vertices, cur_skeleton_pos, section_size, radius, cur_angle, cur_angle_z, curColor);
+				last_skin_ind = generateIndicesForSection(skin_indices, section_size);
+				generateIndicesForBranch(skin_vertices, )
 				
 			}
 			else {
+				//gen first section 
+				generateSection(skin_vertices, cur_skeleton_pos, section_size, radius, cur_angle, cur_angle_z, curColor);
+				for (int i = 0; i < section_size; i++) skin_indices.push_back(i);
+
+				//skel mesh
 				skeleton_vertices.push_back(Vertex{ cur_skeleton_pos, glm::vec3(0,0,0),curColor, glm::vec2(0,0) });
 				cur_skeleton_pos += glm::vec3(length * cur_cos_z * cur_cos, length * cur_sin_z, length * cur_cos_z * cur_sin);
 				skeleton_vertices.push_back(Vertex{ cur_skeleton_pos, glm::vec3(0,0,0),curColor, glm::vec2(0,0) });
 				skeleton_indices.push_back(last_skeleton_ind);
 				skeleton_indices.push_back(++cur_skeleton_ind);
 				last_skeleton_ind = cur_skeleton_ind;
+			
+				//skin mesh
+				generateSection(skin_vertices, cur_skeleton_pos, section_size, radius, cur_angle, cur_angle_z, curColor);
+				last_skin_ind = generateIndicesForSection(skin_indices, section_size);
+				
 				first = false;
 			}
 
