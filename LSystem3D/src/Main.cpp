@@ -56,7 +56,7 @@ int main() {
 	mg.GenerateMesh(ls.getLSystem());
 	
 
-	Mesh mesh = mg.getSkeletonMesh();
+	Mesh mesh = mg.getSkinMesh();
 	glm::mat4 model = glm::mat4(1.f);
 	
 	shaderProgram.Activate();
@@ -72,6 +72,9 @@ int main() {
 	for (int i = 0; i < mesh.indices.size(); i++) {
 		std::cout << mesh.indices[i] << ' ' << std::endl;
 	}*/
+
+	glEnable(GL_DEPTH_TEST);
+
 	//main loop
 	glClearColor(0.26, 0.26, 0.28, 1);
 	while (!glfwWindowShouldClose(window)) {
@@ -83,10 +86,10 @@ int main() {
 		//model = glm::rotate(model, glm::radians(5.f) * (float)glfwGetTime(), glm::vec3(1, 0, 0));
 		shaderProgram.setMat4f("modelMatrix", 1, GL_FALSE, glm::value_ptr(model));
 
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 
-		mesh.Draw(shaderProgram, camera);
+		mesh.Draw(shaderProgram, camera, GL_LINES);
 
 		glfwSwapBuffers(window);
 				

@@ -17,7 +17,6 @@ struct stack_data {
 	float angle;
 	GLuint skeleton_indice;
 	GLuint skin_indice;
-	section last_section;
 };
 
 class MeshGenerator {

@@ -21,4 +21,6 @@ public:
 	~Mesh();
 
 	void Draw(Shader& shader, Camera& camera);
+
+	void Draw(Shader& shader, Camera& camera, GLenum mode);
 };

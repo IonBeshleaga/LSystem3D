@@ -55,3 +55,28 @@ void Mesh::Draw(Shader& shader, Camera& camera) {
 
 	glDrawElements(GL_LINES, indices.size(), GL_UNSIGNED_INT, 0);
 }
+void Mesh::Draw(Shader& shader, Camera& camera, GLenum mode) {
+	shader.Activate();
+	VAO.Bind();
+
+	int diffNum = 0;
+	int specNum = 0;
+
+	for (int i = 0; i < textures.size(); i++) {
+		std::string num;
+		std::string type = textures[i].type;
+		if (type == "diffuse") {
+			num = std::to_string(diffNum++);
+		}
+		else if (type == "specular") {
+			num = std::to_string(specNum++);
+		}
+		textures[i].texUnit(shader, (type + num).c_str(), i);
+		textures[i].Bind();
+	}
+	camera.Matrix(shader, "camMatrix");
+	//shader.setVec3f("camPos", camera.Position.x, camera.Position.y, camera.Position.z);
+
+	glDrawElements(mode, indices.size(), GL_UNSIGNED_INT, 0);
+
+}
