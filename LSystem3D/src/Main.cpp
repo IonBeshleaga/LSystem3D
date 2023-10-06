@@ -63,15 +63,18 @@ int main() {
 	
 
 	std::cout << "Lsystem word " << ls.getLSystem() << std::endl;
-	/*std::cout << "Vertices of mesh " << std::endl;
+	std::cout << "Vertices of mesh " << std::endl;
+	std::cout << "size " << mesh.vertices.size() << std::endl;
 	for (int i = 0; i < mesh.vertices.size(); i++) {
 		std::cout << mesh.vertices[i].position.x << ' ' << mesh.vertices[i].position.y << ' ' << mesh.vertices[i].position.z << std::endl;
-		std::cout << mesh.vertices[i].color.x << ' ' << mesh.vertices[i].color.y << ' ' << mesh.vertices[i].color.z << std::endl << std::endl;
 	}
 	std::cout << "Indices of mesh" << std::endl;
+	std::cout << "size " << mesh.indices.size()<<std::endl;
 	for (int i = 0; i < mesh.indices.size(); i++) {
+		if (i % 6 == 0) std::cout << "--------------------------" << std::endl;
 		std::cout << mesh.indices[i] << ' ' << std::endl;
-	}*/
+	}
+
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -89,7 +92,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 
-		mesh.Draw(shaderProgram, camera, GL_LINES);
+		mesh.Draw(shaderProgram, camera, GL_TRIANGLES);
 
 		glfwSwapBuffers(window);
 				
