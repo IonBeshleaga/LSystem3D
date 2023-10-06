@@ -51,18 +51,22 @@ int main() {
 
 	ls.load_lsystem_configuration("res/test.wconfig");
 	ls.GenerateLSystem();
-	
+	std::cout << "Lsystem word " << ls.getLSystem() << std::endl;
 	mg.load_mesh_configuration("res/test.mconfig", "res/test.cconfig");
 	mg.GenerateMesh(ls.getLSystem());
 	
 
-	Mesh mesh = mg.getSkinMesh();
-	glm::mat4 model = glm::mat4(1.f);
+	Mesh skinMesh = mg.getSkinMesh();
+	glm::mat4 skinModel = glm::mat4(1.f);
 	
+	Mesh skelMesh = mg.getSkeletonMesh();
+	glm::mat4 skelModel = glm::mat4(1.f);
+	skelModel = glm::translate(skelModel, glm::vec3(10, 0, 0));
+
 	shaderProgram.Activate();
 	
 
-	std::cout << "Lsystem word " << ls.getLSystem() << std::endl;
+	/*std::cout << "Lsystem word " << ls.getLSystem() << std::endl;
 	std::cout << "Vertices of mesh " << std::endl;
 	std::cout << "size " << mesh.vertices.size() << std::endl;
 	for (int i = 0; i < mesh.vertices.size(); i++) {
@@ -75,7 +79,7 @@ int main() {
 		std::cout << mesh.indices[i] << ' ' << std::endl;
 	}
 
-
+	*/
 	glEnable(GL_DEPTH_TEST);
 
 	//main loop
@@ -86,13 +90,15 @@ int main() {
 		camera.Update(45, 0.1, 100);
 		//camera.Matrix(shaderProgram, "camMatrix");
 
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		//model = glm::rotate(model, glm::radians(5.f) * (float)glfwGetTime(), glm::vec3(1, 0, 0));
-		shaderProgram.setMat4f("modelMatrix", 1, GL_FALSE, glm::value_ptr(model));
+		shaderProgram.setMat4f("modelMatrix", 1, GL_FALSE, glm::value_ptr(skinModel));
+		skinMesh.Draw(shaderProgram, camera, GL_TRIANGLES);
 
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+		shaderProgram.setMat4f("modelMatrix", 1, GL_FALSE, glm::value_ptr(skelModel));
+		skelMesh.Draw(shaderProgram, camera, GL_LINES);
 
-
-		mesh.Draw(shaderProgram, camera, GL_TRIANGLES);
 
 		glfwSwapBuffers(window);
 				

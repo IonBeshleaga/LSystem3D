@@ -31,8 +31,8 @@ public:
 	std::vector<Vertex> skeleton_vertices;
 	std::vector<GLuint> skeleton_indices;
 
-	int section_size = 3;
-	float radius = 0.5;
+	int section_size = 9;
+	float radius = 2;
 
 	std::vector<Vertex> skin_vertices;
 	std::vector<GLuint> skin_indices;
