@@ -7,7 +7,7 @@ float generateAnglesInRange(float a, float b) {
 }
 
 void generateSection(std::vector<Vertex>& v, glm::vec3 pos, int n, float radius, float cur_angle, float cur_angle_z, glm::vec3 cur_color) {
-	std::cout << " gen_section() " << std::endl;
+	//std::cout << " gen_section() " << std::endl;
 	float cur_in_angle = glm::radians(cur_angle);
 	cur_angle_z = glm::radians(cur_angle_z-90);
 	float in_angle = glm::radians(360.f / (float)n);
@@ -28,14 +28,14 @@ void generateSection(std::vector<Vertex>& v, glm::vec3 pos, int n, float radius,
 }
 
 void generateIndicesForSection(std::vector<GLuint>& v, int n, int start) {
-	std::cout << "Hello from ind_sect() " << start << std::endl;
+	//std::cout << "Hello from ind_sect() " << start << std::endl;
 	//GLuint start = v[v.size() - 1]+1;
 	for (int i = 0; i < n; i++) v.push_back(start + i);
 	
 }
 
 void generateIndicesForBranch(std::vector<GLuint>& v, GLuint bot_ind, GLuint top_ind, int n) {
-	std::cout << "Hello from gen_ind_for_br " << bot_ind << ' ' << top_ind << std::endl;
+	//std::cout << "Hello from gen_ind_for_br " << bot_ind << ' ' << top_ind << std::endl;
 	int i;
 	for (i = 0; i < (n - 1); i++) {
 		v.push_back(bot_ind + i); v.push_back(top_ind + i); v.push_back(top_ind + i + 1);
@@ -62,15 +62,18 @@ void MeshGenerator::load_mesh_configuration(std::string mesh_config_path, std::s
 }
 
 void MeshGenerator::GenerateMesh(std::string lsystem) {
-	std::cout << "Starterd mesh generating" << std::endl;
+	//std::cout << "Starterd mesh generating" << std::endl;
 	GLuint cur_skeleton_ind = 0;
 	GLuint last_skeleton_ind = 0;
 	GLuint cur_skin_ind = 0;
 	GLuint last_skin_ind = 0;
+	int tree_level = 1;
 	float cur_angle = start_angle;
 	float cur_angle_z = start_angle;
 	glm::vec3 cur_skeleton_pos = start_pos;
 	float angle_rad, angle_rad_z, add_angle;
+	float cur_radius =radius; // *radius_change;
+	
 
 	//vertices.push_back({ cur_pos, glm::vec3(0,0,0), glm::vec3(1,0,0), glm::vec2(0,0) });
 
@@ -103,18 +106,18 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 				last_skeleton_ind = cur_skeleton_ind;
 
 				//skin mesh
-				generateSection(skin_vertices, cur_skeleton_pos, section_size, radius, cur_angle, cur_angle_z, curColor);
+				generateSection(skin_vertices, cur_skeleton_pos, section_size, cur_radius, cur_angle, cur_angle_z, curColor);
 				//last_skin_ind = cur_skin_ind;
 				cur_skin_ind = section_size * cur_skeleton_ind;
-				generateIndicesForSection(skin_indices, section_size, cur_skin_ind);
+				//generateIndicesForSection(skin_indices, section_size, cur_skin_ind);
 				generateIndicesForBranch(skin_indices, last_skin_ind, cur_skin_ind, section_size);
 				last_skin_ind = cur_skin_ind;
 				
 			}
 			else {
 				//gen first section 
-				generateSection(skin_vertices, cur_skeleton_pos, section_size, radius, cur_angle, cur_angle_z, curColor);
-				for (int i = 0; i < section_size; i++) skin_indices.push_back(i);
+				generateSection(skin_vertices, cur_skeleton_pos, section_size, cur_radius, cur_angle, cur_angle_z, curColor);
+				//for (int i = 0; i < section_size; i++) skin_indices.push_back(i);
 
 				//skel mesh
 				skeleton_vertices.push_back(Vertex{ cur_skeleton_pos, glm::vec3(0,0,0),curColor, glm::vec2(0,0) });
@@ -125,9 +128,11 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 				last_skeleton_ind = cur_skeleton_ind;
 			
 				//skin mesh
-				generateSection(skin_vertices, cur_skeleton_pos, section_size, radius, cur_angle, cur_angle_z, curColor);
+				generateSection(skin_vertices, cur_skeleton_pos, section_size, cur_radius, cur_angle, cur_angle_z, curColor);
+				
 				cur_skin_ind = cur_skeleton_ind * section_size;
-				generateIndicesForSection(skin_indices, section_size, cur_skin_ind );
+				std::cout << "cur_skin_ind " << cur_skin_ind << std::endl;
+				//generateIndicesForSection(skin_indices, section_size, cur_skin_ind );
 				generateIndicesForBranch(skin_indices, last_skin_ind, cur_skin_ind, section_size);
 				last_skin_ind = cur_skin_ind;
 				first = false;
@@ -142,20 +147,23 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			cur_angle_z += add_angle;
 		}
 		else if (currentRule.type == stack) {
-			std::cout << " Rotation section | " ;
+			std::cout << " Stack section | " ;
 			std::cout << "type " << currentRule.data[0] << std::endl;
 			if (currentRule.data[0] == 0) {
-				radius /= 1.9f;
-				stk.push(stack_data{ cur_skeleton_pos, cur_angle_z, cur_skeleton_ind, cur_skin_ind });
+				tree_level++;
+				stk.push(stack_data{ cur_skeleton_pos, cur_angle_z, cur_skeleton_ind, cur_skin_ind, tree_level });
+				cur_radius = (radius_change/tree_level)*radius;
 			}
-			else {
-				radius *= 1.9f;
+			else {				
 				cur_angle_z = stk.top().angle;
 				last_skeleton_ind = stk.top().skeleton_indice;
 				last_skin_ind = last_skeleton_ind * section_size;
 				//last_skin_ind = stk.top().skin_indice;
 				cur_skeleton_pos = stk.top().pos;
+				tree_level = stk.top().level;
 				stk.pop();
+
+				cur_radius = (radius_change / tree_level) * radius;
 			}
 		}
 	}

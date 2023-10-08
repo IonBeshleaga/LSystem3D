@@ -17,6 +17,7 @@ struct stack_data {
 	float angle;
 	GLuint skeleton_indice;
 	GLuint skin_indice;
+	int level;
 };
 
 class MeshGenerator {
@@ -31,8 +32,9 @@ public:
 	std::vector<Vertex> skeleton_vertices;
 	std::vector<GLuint> skeleton_indices;
 
-	int section_size = 9;
-	float radius = 2;
+	int section_size = 7;
+	float radius = 0.5;
+	float radius_change = 1;
 
 	std::vector<Vertex> skin_vertices;
 	std::vector<GLuint> skin_indices;
