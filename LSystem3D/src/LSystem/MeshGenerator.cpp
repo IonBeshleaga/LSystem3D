@@ -8,21 +8,21 @@ float generateAnglesInRange(float a, float b) {
 
 void generateSection(std::vector<Vertex>& v, glm::vec3 pos, int n, float radius, float cur_angle, float cur_angle_z, glm::vec3 cur_color) {
 	//std::cout << " gen_section() " << std::endl;
-	float cur_in_angle = glm::radians(cur_angle);
+	float cur_in_angle = cur_angle;//glm::radians(cur_angle);
 	cur_angle_z = glm::radians(cur_angle_z-90);
+	
 	float in_angle = glm::radians(360.f / (float)n);
 	glm::vec3 new_pos;
 	float shade = 0.25f; float shade_change = 0.75 / n;
-
-
 	float cur_cos_z = std::cos(cur_angle_z);
 	float cur_sin_z = std::sin(cur_angle_z);
-	for (int vertices = 0; vertices < n; vertices++, cur_in_angle += in_angle,cur_angle_z-=in_angle,shade += shade_change) {
 
+	for (int vertices = 0; vertices < n; vertices++, cur_in_angle += in_angle,shade += shade_change) {
+		
 		float cur_cos = std::cos(cur_in_angle); 
 		float cur_sin = std::sin(cur_in_angle);
 
-		new_pos = pos + glm::vec3(cur_cos_z * cur_cos * radius, cur_sin*cur_sin_z * radius, cur_cos_z * cur_sin *radius);
+		new_pos = pos + glm::vec3(radius*cur_cos_z * cur_cos , radius*cur_sin_z, radius*cur_cos_z * cur_sin );
 		v.push_back({ new_pos, glm::vec3(0,0,0), cur_color*shade, glm::vec2(0.0) });
 	}
 }
@@ -150,8 +150,9 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			std::cout << " Stack section | " ;
 			std::cout << "type " << currentRule.data[0] << std::endl;
 			if (currentRule.data[0] == 0) {
-				tree_level++;
+				
 				stk.push(stack_data{ cur_skeleton_pos, cur_angle_z, cur_skeleton_ind, cur_skin_ind, tree_level });
+				tree_level++;
 				cur_radius = (radius_change/tree_level)*radius;
 			}
 			else {				
@@ -162,7 +163,7 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 				cur_skeleton_pos = stk.top().pos;
 				tree_level = stk.top().level;
 				stk.pop();
-
+				tree_level++;
 				cur_radius = (radius_change / tree_level) * radius;
 			}
 		}

@@ -49,6 +49,7 @@ int main() {
 	LSystem ls;
 	MeshGenerator mg;
 
+
 	ls.load_lsystem_configuration("res/test.wconfig");
 	ls.GenerateLSystem();
 	std::cout << "Lsystem word " << ls.getLSystem() << std::endl;
