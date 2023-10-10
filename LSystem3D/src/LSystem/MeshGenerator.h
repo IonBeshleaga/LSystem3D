@@ -39,6 +39,7 @@ public:
 	std::vector<Vertex> skin_vertices;
 	std::vector<GLuint> skin_indices;
 
+public:
 	MeshGenerator();
 	~MeshGenerator();
 

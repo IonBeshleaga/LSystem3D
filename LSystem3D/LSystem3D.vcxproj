@@ -127,6 +127,7 @@
     <None Include="res\test.wconfig" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="res\conf_buf.txt" />
     <Text Include="TASKS.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

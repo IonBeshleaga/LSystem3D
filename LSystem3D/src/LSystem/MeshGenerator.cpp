@@ -8,21 +8,37 @@ float generateAnglesInRange(float a, float b) {
 
 void generateSection(std::vector<Vertex>& v, glm::vec3 pos, int n, float radius, float cur_angle, float cur_angle_z, glm::vec3 cur_color) {
 	//std::cout << " gen_section() " << std::endl;
-	float cur_in_angle = cur_angle;//glm::radians(cur_angle);
-	cur_angle_z = glm::radians(cur_angle_z-90);
+	float cur_in_angle = glm::radians(cur_angle);
+
+	float rad_angle_z = glm::radians(cur_angle_z - 90);
+	cur_angle_z = glm::radians(cur_angle_z);
+
 	
 	float in_angle = glm::radians(360.f / (float)n);
 	glm::vec3 new_pos;
+	glm::vec3 dir;
+	glm::vec3 radVec;
 	float shade = 0.25f; float shade_change = 0.75 / n;
+	float rad_cos_z = std::cos(rad_angle_z);
+	float rad_sin_z = std::sin(rad_angle_z);
 	float cur_cos_z = std::cos(cur_angle_z);
 	float cur_sin_z = std::sin(cur_angle_z);
+	float cur_cos = std::cos(cur_in_angle);
+	float cur_sin = std::sin(cur_in_angle);
+
+	dir = glm::normalize(pos - glm::vec3(cur_cos_z*cur_cos, cur_sin_z, cur_cos_z*cur_sin));
 
 	for (int vertices = 0; vertices < n; vertices++, cur_in_angle += in_angle,shade += shade_change) {
 		
-		float cur_cos = std::cos(cur_in_angle); 
-		float cur_sin = std::sin(cur_in_angle);
+		cur_cos = std::cos(cur_in_angle);
+		cur_sin = std::sin(cur_in_angle);
+		
+		// radVec = radVec * cos(theta) + (glm::cross(rotAxis, radVec)) * sin(theta) + rotAxis * (glm::dot(rotAxis, radVec))* (1 - cos(theta)); 
+		
+		radVec = glm::vec3(radius, 0, 0);
+		radVec = radVec * cur_cos + (glm::cross(dir, radVec) * cur_sin) + dir * (glm::dot(dir, radVec) * (1 - cur_cos));
 
-		new_pos = pos + glm::vec3(radius*cur_cos_z * cur_cos , radius*cur_sin_z, radius*cur_cos_z * cur_sin );
+		new_pos = pos + radVec;
 		v.push_back({ new_pos, glm::vec3(0,0,0), cur_color*shade, glm::vec2(0.0) });
 	}
 }
