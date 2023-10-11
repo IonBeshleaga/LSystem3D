@@ -66,21 +66,22 @@ int main() {
 
 	shaderProgram.Activate();
 	
-
-	/*std::cout << "Lsystem word " << ls.getLSystem() << std::endl;
+	/*
+	std::cout << "Lsystem word " << ls.getLSystem() << std::endl;
 	std::cout << "Vertices of mesh " << std::endl;
-	std::cout << "size " << mesh.vertices.size() << std::endl;
-	for (int i = 0; i < mesh.vertices.size(); i++) {
-		std::cout << mesh.vertices[i].position.x << ' ' << mesh.vertices[i].position.y << ' ' << mesh.vertices[i].position.z << std::endl;
+	std::cout << "size " << skinMesh.vertices.size() << std::endl;
+	for (int i = 0; i < skinMesh.vertices.size(); i++) {
+		std::cout << skinMesh.vertices[i].position.x << ' ' << skinMesh.vertices[i].position.y << ' ' << skinMesh.vertices[i].position.z << std::endl;
 	}
 	std::cout << "Indices of mesh" << std::endl;
-	std::cout << "size " << mesh.indices.size()<<std::endl;
-	for (int i = 0; i < mesh.indices.size(); i++) {
-		if (i % 6 == 0) std::cout << "--------------------------" << std::endl;
-		std::cout << mesh.indices[i] << ' ' << std::endl;
+	std::cout << "size " << skinMesh.indices.size()<<std::endl;
+	for (int i = 0; i < skinMesh.indices.size(); i++) {
+		if (i % 18 == 0) std::cout << "==========================" << std::endl;
+		if (i % 3 == 0) std::cout << "--------------------------" << std::endl;
+		std::cout <<skinMesh.indices[i] << ' ' << std::endl;
 	}
-
 	*/
+	
 	glEnable(GL_DEPTH_TEST);
 
 	//main loop

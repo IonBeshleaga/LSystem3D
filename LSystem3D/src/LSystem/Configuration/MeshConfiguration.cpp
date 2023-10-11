@@ -63,7 +63,11 @@ void MeshConfiguration::load_mesh_config(std::string path) {
 			in >> v[0];
 			mrules.insert(std::make_pair(symbol, MRule{ branch, v }));
 		}
-
+		else if (type == 'l') {
+			v.resize(1);
+			in >> v[0];
+			mrules.insert(std::make_pair(symbol, MRule{ leaf, v }));
+		}
 	}
 
 }

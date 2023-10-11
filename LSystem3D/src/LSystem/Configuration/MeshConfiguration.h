@@ -7,7 +7,7 @@
 #include <fstream>
 #include <glm/glm.hpp>
 
-enum MRuleType { stack, branch, rotate };
+enum MRuleType { stack, branch, leaf, rotate };
 
 struct MRule {
 	MRuleType type;
