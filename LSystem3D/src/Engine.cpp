@@ -45,10 +45,12 @@ void Engine::Draw() {
 }
 
 void Engine::Run() {
+	//dt
 	float last_time = glfwGetTime();
 	float current_time;
 	float deltaTime;
 
+	//Gen Models
 	lsystem->GenerateLSystem();
 	meshGen->GenerateMesh(lsystem->getLSystem());
 
@@ -58,9 +60,18 @@ void Engine::Run() {
 	modelMatrix = glm::translate(modelMatrix, glm::vec3(6, 0, 0));
 	models["skin"] = model_object{ meshGen->getSkinMesh(), modelMatrix, GL_TRIANGLES };
 
+	//ImGui
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGui::StyleColorsDark();
+	ImGui_ImplGlfw_InitForOpenGL(window->window, true);
+	ImGui_ImplOpenGL3_Init("#version 330");
+	//opengl sets
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.26, 0.26, 0.28, 1);
 	
+	//loop
 	while (!window->isShouldClose()) {
 		current_time = glfwGetTime();
 		deltaTime = current_time - last_time;
