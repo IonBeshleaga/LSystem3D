@@ -41,6 +41,7 @@ public:
 
 public:
 	MeshGenerator();
+	MeshGenerator(std::string mesh_config_path, std::string color_config_path);
 	~MeshGenerator();
 
 	void load_mesh_configuration(std::string mesh_config_path, std::string color_config_path);

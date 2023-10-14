@@ -79,6 +79,11 @@ MeshGenerator::MeshGenerator() {
 	start_pos = glm::vec3(0, 0, 0);
 }
 
+MeshGenerator::MeshGenerator(std::string mesh_config_path, std::string color_config_path) {
+	load_mesh_configuration(mesh_config_path, color_config_path);
+}
+
+
 MeshGenerator::~MeshGenerator() {
 
 }

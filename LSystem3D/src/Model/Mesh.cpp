@@ -25,6 +25,9 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vecto
 
 }
 
+Mesh::Mesh() {
+	
+}
 
 Mesh::~Mesh() {
 

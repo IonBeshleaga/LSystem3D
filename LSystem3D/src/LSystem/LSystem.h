@@ -23,6 +23,7 @@ public:
 	RulesConfiguration rconfig;
 
 	LSystem();
+	LSystem(std::string lsystem_confg_path);
 	~LSystem();
 
 	void load_lsystem_configuration(std::string lsystem_config_path);

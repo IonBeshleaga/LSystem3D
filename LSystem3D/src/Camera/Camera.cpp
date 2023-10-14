@@ -6,12 +6,11 @@ Camera::Camera(int width, int height, glm::vec3 position) {
 	this->height = height;
 	this->Position = position;
 
-	lastTime = glfwGetTime();
-	currentTime = 0;
-	deltaTime = 0;
 }
 
-void Camera::Update(float FOVdeg, float nearPlane, float farPlane) {
+void Camera::Update(float FOVdeg, float nearPlane, float farPlane, float window_width, float window_height) {
+	width = window_width;
+	height = window_height;
 	glm::mat4 view = glm::lookAt(Position, Position + Orientation, Up);
 	glm::mat4 proj = glm::perspective(glm::radians(FOVdeg), (float)width / height, nearPlane, farPlane);
 
@@ -25,11 +24,8 @@ void Camera::Matrix(Shader& shader, const char* uniform) {
 
 }
 
-void Camera::Input(GLFWwindow* window) {
+void Camera::Input(GLFWwindow* window, float deltaTime) {
 
-	currentTime = glfwGetTime();
-	deltaTime = currentTime - lastTime;
-	lastTime = currentTime;
 	
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
@@ -76,7 +72,7 @@ void Camera::Input(GLFWwindow* window) {
 
 		glm::vec3 newOrientation = glm::rotate(Orientation, glm::radians(-rotX), glm::normalize(glm::cross(Orientation, Up)));
 
-		if ((!glm::angle(newOrientation, Up) <= glm::radians(5.f)) || (glm::angle(newOrientation, -Up) <= glm::radians(5.f)))
+		if ((!glm::angle(newOrientation, Up) <= glm::radians(15.f)) || (glm::angle(newOrientation, -Up) <= glm::radians(15.f)))
 		{
 			Orientation = newOrientation;
 		}

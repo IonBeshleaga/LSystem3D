@@ -11,6 +11,10 @@ LSystem::LSystem() {
 
 }
 
+LSystem::LSystem(std::string lsystem_confg_path) {
+	load_lsystem_configuration(lsystem_confg_path);
+}
+
 LSystem::~LSystem() {
 
 }
@@ -36,5 +40,6 @@ void LSystem::load_lsystem_configuration(std::string lsystem_config_path) {
 	rconfig = RulesConfiguration(lsystem_config_path);
 	ls_iteration = rconfig.iteration;
 	axiom = rconfig.axiom;
+	lsystem_word = axiom;
 }
 

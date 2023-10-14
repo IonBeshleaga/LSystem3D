@@ -92,6 +92,7 @@
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\EBO\EBO.cpp" />
+    <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\LSystem\Configuration\MeshConfiguration.cpp" />
     <ClCompile Include="src\LSystem\LSystem.cpp" />
     <ClCompile Include="src\LSystem\Configuration\RulesConfiguration.cpp" />
@@ -103,10 +104,12 @@
     <ClCompile Include="src\Texture\Texture.cpp" />
     <ClCompile Include="src\VAO\VAO.cpp" />
     <ClCompile Include="src\VBO\VBO.cpp" />
+    <ClCompile Include="src\Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\EBO\EBO.h" />
+    <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\LSystem\Configuration\MeshConfiguration.h" />
     <ClInclude Include="src\LSystem\LSystem.h" />
     <ClInclude Include="src\LSystem\Configuration\RulesConfiguration.h" />
@@ -118,6 +121,7 @@
     <ClInclude Include="src\Texture\Texture.h" />
     <ClInclude Include="src\VAO\VAO.h" />
     <ClInclude Include="src\VBO\VBO.h" />
+    <ClInclude Include="src\Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader.frag" />
