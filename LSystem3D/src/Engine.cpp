@@ -23,6 +23,10 @@ Engine::~Engine() {
 	delete window;
 	delete lsystem;
 	delete meshGen;
+
+	/*ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();*/
 }
 
 
@@ -37,11 +41,28 @@ void Engine::Update(float dt) {
 
 void Engine::Draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	/*
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+	*/
+	
 	for (auto it : models) {
 		shader->setMat4f("modelMatrix", 1, GL_FALSE, glm::value_ptr(it.second.modelMatrix));
 		it.second.mesh.Draw(*shader, *camera, it.second.drawingType);
 	}
+	/*	
+	ImGui::Begin("Window");
+	ImGui::Text("Hello Text");
+	ImGui::End();
+
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	*/
+	
 	window->swapBuffers();
+
+
 }
 
 void Engine::Run() {
@@ -61,12 +82,12 @@ void Engine::Run() {
 	models["skin"] = model_object{ meshGen->getSkinMesh(), modelMatrix, GL_TRIANGLES };
 
 	//ImGui
-	IMGUI_CHECKVERSION();
+	/*IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	ImGui::StyleColorsDark();
 	ImGui_ImplGlfw_InitForOpenGL(window->window, true);
-	ImGui_ImplOpenGL3_Init("#version 330");
+	ImGui_ImplOpenGL3_Init("#version 330");*/
 	//opengl sets
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.26, 0.26, 0.28, 1);
@@ -76,8 +97,10 @@ void Engine::Run() {
 		current_time = glfwGetTime();
 		deltaTime = current_time - last_time;
 		last_time = current_time;
-
+		//if (!io.WantCaptureMouse) {
 		ProccesInput(deltaTime);
+		//	io.MouseDrawCursor = false;
+		//}
 		Update(deltaTime);
 		Draw();
 		window->pollEvents();
