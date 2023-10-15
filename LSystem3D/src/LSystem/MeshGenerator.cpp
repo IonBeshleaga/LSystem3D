@@ -94,7 +94,40 @@ void MeshGenerator::load_mesh_configuration(std::string mesh_config_path, std::s
 	start_pos = mconfig.start_pos;
 }
 
+
+//MAIN GEN FUNCTION
 void MeshGenerator::GenerateMesh(std::string lsystem) {
+	float length = 0;
+
+	glm::vec3 Translate = glm::vec3(0, 0, 0);
+	glm::vec3 RadiusVector = glm::vec3(radius, 0, 0);
+	glm::quat Rotation = glm::quat(glm::vec3(0, 0, glm::radians(start_angle)));
+
+	for (int i = 1; i < lsystem.length(); i++) {
+		MRule currentRule = mconfig.getMRule(lsystem[i]);
+		switch (currentRule.type)
+		{
+		case stack:
+			if (currentRule.data[0] == save) {
+			
+			}
+			else {
+			
+			}
+			break;
+		case branch:
+
+			break;
+		case leaf:
+			break;
+		case rotate:
+			break;
+		default:
+			break;
+		}
+	}
+}
+/*void MeshGenerator::GenerateMesh(std::string lsystem) {
 	//std::cout << "Starterd mesh generating" << std::endl;
 	GLuint cur_skeleton_ind = 0;
 	GLuint last_skeleton_ind = 0;
@@ -258,7 +291,7 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			}
 		}
 	}
-}
+}*/
 
 Mesh MeshGenerator::getSkeletonMesh() {
 	std::vector<Texture> textures;

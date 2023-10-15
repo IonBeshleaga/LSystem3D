@@ -26,3 +26,71 @@ https://www.csh.rit.edu/~aidan/portfolio/3DLSystems.shtml
   } 
   meshGeometry.push_back(pointsForIteration); 
  }
+ -----------------------------------------------------------------------------------------------------------
+
+ for (int i = 0; i < system.size(); i++)
+	{
+		switch (system[i])
+		{
+		case 't': //translate
+			startingPoint -= translationVector;
+			break;
+		case 'T':
+			startingPoint += translationVector;
+			break;
+		case 's': //scale smaller
+			radiusVector /= scaleOffset;
+			break;
+		case 'S': //scale larger
+			radiusVector *= scaleOffset;
+			break;
+		case 'x': 
+			translationVector = glm::rotate(rotationX, translationVector);
+			break;
+		case 'X': 
+			translationVector = glm::rotate(negRotationX, translationVector);
+			break;
+		case 'y':
+			translationVector = glm::rotate(rotationY, translationVector);
+			break;
+		case 'Y':
+			translationVector = glm::rotate(negRotationY, translationVector);
+			break;
+		case 'z':
+			translationVector = glm::rotate(rotationZ, translationVector);
+			break;
+		case 'Z':
+			translationVector = glm::rotate(negRotationZ, translationVector);
+			break;
+		case '[': //push point onto the stack
+			if (pointCollections.size() > 0)
+			{
+				std::pair<glm::vec3, glm::vec3> pointCollectionBack = pointCollections.back();
+				pointStack.push_back(std::make_pair(pointCollectionBack.first, std::make_pair(pointCollectionBack.second, translationVector)));
+			}
+			else
+				pointStack.push_back(std::make_pair(startingPoint, std::make_pair(radiusVector, translationVector)));
+			break;
+		case ']': { //pop point from the stack
+			std::pair<glm::vec3, std::pair<glm::vec3, glm::vec3>> popped = pointStack.back();
+			pointStack.pop_back();
+			startingPoint = popped.first;
+			radiusVector = popped.second.first;
+			translationVector = popped.second.second;
+		}
+			break;
+		case 'c':
+		case 'C':
+			closeOffIndeces.push_back(pointCollections.size() - 1);
+			break;
+		case '+': //pushes the current point to be used on the geometry
+			pointCollections.push_back(std::make_pair(startingPoint, radiusVector));
+			break;
+		case 'F':
+			startingPoint += translationVector;
+			pointCollections.push_back(std::make_pair(startingPoint, radiusVector));
+			break;
+		default:
+			break;
+		}
+	}
