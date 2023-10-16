@@ -1,6 +1,7 @@
 #include "MeshGenerator.h"
 
 
+//in gradus
 float generateAnglesInRange(float a, float b) {
 	if (a == b) return a;
 	return a + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (b - a)));
@@ -98,29 +99,72 @@ void MeshGenerator::load_mesh_configuration(std::string mesh_config_path, std::s
 //MAIN GEN FUNCTION
 void MeshGenerator::GenerateMesh(std::string lsystem) {
 	float length = 0;
+	float angle_x, angle_y, angle_z;
+	glm::vec3 curColor;
 
-	glm::vec3 Translate = glm::vec3(0, 0, 0);
+	glm::vec3 CurPos = start_pos;
+	glm::vec3 Dir = glm::vec3(1, 0, 0);
+	glm::vec3 Translate = Dir;
 	glm::vec3 RadiusVector = glm::vec3(radius, 0, 0);
 	glm::quat Rotation = glm::quat(glm::vec3(0, 0, glm::radians(start_angle)));
 
-	for (int i = 1; i < lsystem.length(); i++) {
+	int last_skel_ind = 0;
+	int cur_skel_ind = 0;
+
+	Dir = glm::rotate(Rotation, Dir);
+	skeleton_vertices.push_back(Vertex{ CurPos });
+
+	for (int i = 0; i < lsystem.length(); i++) {
 		MRule currentRule = mconfig.getMRule(lsystem[i]);
 		switch (currentRule.type)
 		{
 		case stack:
 			if (currentRule.data[0] == save) {
-			
+				stk.push({ CurPos, RadiusVector, Dir, last_skel_ind });
 			}
 			else {
-			
+				CurPos = stk.top().pos;
+				RadiusVector = stk.top().radius;
+				Dir= stk.top().dir;
+				last_skel_ind = stk.top().indice;
+				stk.pop();
 			}
 			break;
 		case branch:
+			//rule data
+			length = currentRule.data[0];
+			curColor = mconfig.getCRule(lsystem[i]);
+			//apply data
+			
 
+			//skel vetices
+			CurPos += Dir*length;
+			skeleton_vertices.push_back(Vertex{ CurPos, glm::vec3(0,0,0), curColor });
+			//skel indices
+			skeleton_indices.push_back(last_skel_ind);
+			skeleton_indices.push_back(++cur_skel_ind);
+			last_skel_ind = cur_skel_ind;
 			break;
 		case leaf:
+			//rule data
+			length = currentRule.data[0];
+			curColor = mconfig.getCRule(lsystem[i]);
+			//apply data
+			//skel vetices
+			CurPos += Dir*length;
+			skeleton_vertices.push_back(Vertex{ CurPos, glm::vec3(0,0,0),curColor });
+			//skel indices
+			skeleton_indices.push_back(last_skel_ind);
+			skeleton_indices.push_back(++cur_skel_ind);
+			last_skel_ind = cur_skel_ind;
 			break;
 		case rotate:
+			angle_x = generateAnglesInRange(currentRule.data[0], currentRule.data[1]);
+			angle_y = generateAnglesInRange(currentRule.data[2], currentRule.data[3]);
+			angle_z = generateAnglesInRange(currentRule.data[4], currentRule.data[5]);
+			Rotation = glm::quat(glm::vec3(glm::radians(angle_x), glm::radians(angle_y), glm::radians(angle_z)));
+			Dir = glm::rotate(Rotation, Dir);
+			std::cout << "Rotate " << Dir.x << ' ' << Dir.y << ' ' << Dir.z << std::endl;
 			break;
 		default:
 			break;

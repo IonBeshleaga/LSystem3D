@@ -14,10 +14,9 @@ struct section {
 
 struct stack_data {
 	glm::vec3 pos;
-	float angle;
-	GLuint skeleton_indice;
-	GLuint skin_indice;
-	int level;
+	glm::vec3 radius;
+	glm::vec3 dir;
+	int indice;
 };
 
 class MeshGenerator {

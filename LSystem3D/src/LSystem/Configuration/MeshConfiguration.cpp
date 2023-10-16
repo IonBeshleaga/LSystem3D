@@ -54,8 +54,8 @@ void MeshConfiguration::load_mesh_config(std::string path) {
 			mrules.insert(std::make_pair(symbol, MRule{ stack, v }));
 		}
 		else if (type == 'r') {
-			v.resize(2);
-			in >> v[0] >> v[1];
+			v.resize(6);
+			in >> v[0] >> v[1] >> v[2] >> v[3] >> v[4] >> v[5];
 			mrules.insert(std::make_pair(symbol, MRule{ rotate, v }));
 		}
 		else if (type == 'b') {
