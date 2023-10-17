@@ -108,6 +108,9 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 	glm::vec3 RadiusVector = glm::vec3(radius, 0, 0);
 	glm::quat Rotation = glm::quat(glm::vec3(0, 0, glm::radians(start_angle)));
 
+	glm::vec3 RadVecForSection;
+	glm::vec3 vertex;
+
 	int last_skel_ind = 0;
 	int cur_skel_ind = 0;
 
@@ -145,6 +148,15 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			skeleton_indices.push_back(++cur_skel_ind);
 			last_skel_ind = cur_skel_ind;
 			break;
+
+			//skin ind
+
+			//skin vertices
+			for (int i = 0; i < section_size; i++) {
+				float theta = (6.2831853f/section_size) * i;
+				RadVecForSection = CurPos+ RadiusVector * cos(theta) + (glm::cross(Dir, RadiusVector)) * sin(theta) + Dir * (glm::dot(Dir, RadiusVector)) * (1 - cos(theta));
+				skeleton_vertices.push_back(RadVecForSection);
+			}
 		case leaf:
 			//rule data
 			length = currentRule.data[0];
@@ -157,6 +169,7 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			skeleton_indices.push_back(last_skel_ind);
 			skeleton_indices.push_back(++cur_skel_ind);
 			last_skel_ind = cur_skel_ind;
+
 			break;
 		case rotate:
 			angle_x = generateAnglesInRange(currentRule.data[0], currentRule.data[1]);
