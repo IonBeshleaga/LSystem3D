@@ -100,7 +100,7 @@ void MeshGenerator::load_mesh_configuration(std::string mesh_config_path, std::s
 void MeshGenerator::GenerateMesh(std::string lsystem) {
 	float length = 0;
 	float angle_x, angle_y, angle_z;
-	glm::vec3 curColor;
+	glm::vec3 curColor = glm::vec3(0,0,0);
 
 	glm::vec3 CurPos = start_pos;
 	glm::vec3 Dir = glm::vec3(1, 0, 0);
@@ -114,8 +114,24 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 	int last_skel_ind = 0;
 	int cur_skel_ind = 0;
 
+	int last_skin_ind = 0;
+	int cur_skin_ind = 0;
+
+	int leaf_num = 0;
+	int tree_level = 1;
 	Dir = glm::rotate(Rotation, Dir);
+
+	float shade = 0.25f; float cur_shade = shade;  float shade_change = 0.75 / section_size;
+
 	skeleton_vertices.push_back(Vertex{ CurPos });
+	for (int i = 0; i < section_size; i++) {
+		
+		float theta = (6.2831853f / section_size) * i;
+		RadVecForSection = CurPos + (RadiusVector * cos(theta) + (glm::cross(Dir, RadiusVector)) * sin(theta) + Dir * (glm::dot(Dir, RadiusVector)) * (1 - cos(theta)));
+		skin_vertices.push_back(Vertex{ RadVecForSection, glm::vec3(0,0,0), curColor*cur_shade, glm::vec2(0,0) });
+		cur_shade += shade_change;
+	}
+	
 
 	for (int i = 0; i < lsystem.length(); i++) {
 		MRule currentRule = mconfig.getMRule(lsystem[i]);
@@ -123,14 +139,20 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 		{
 		case stack:
 			if (currentRule.data[0] == save) {
-				stk.push({ CurPos, RadiusVector, Dir, last_skel_ind });
+				stk.push({ CurPos, RadiusVector, Dir, last_skel_ind ,last_skin_ind, tree_level });
+				tree_level++;
+				RadiusVector.x = (radius_change / tree_level) * radius;
 			}
 			else {
 				CurPos = stk.top().pos;
 				RadiusVector = stk.top().radius;
 				Dir= stk.top().dir;
-				last_skel_ind = stk.top().indice;
+				last_skel_ind = stk.top().skel_indice;
+				last_skin_ind = stk.top().skin_indice;
+				tree_level = stk.top().level;
 				stk.pop();
+				tree_level++;
+				RadiusVector.x = (radius_change / tree_level) * radius;
 			}
 			break;
 		case branch:
@@ -142,21 +164,29 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 
 			//skel vetices
 			CurPos += Dir*length;
-			skeleton_vertices.push_back(Vertex{ CurPos, glm::vec3(0,0,0), curColor });
+			skeleton_vertices.push_back(Vertex{ CurPos, glm::vec3(0,0,0), curColor, glm::vec2(0,0) });
 			//skel indices
 			skeleton_indices.push_back(last_skel_ind);
 			skeleton_indices.push_back(++cur_skel_ind);
 			last_skel_ind = cur_skel_ind;
-			break;
+			
 
-			//skin ind
-
+			
+			//skin cur ind
+			cur_skin_ind = (section_size * cur_skel_ind) - (section_size - 1) * leaf_num;
 			//skin vertices
+			cur_shade = shade;
 			for (int i = 0; i < section_size; i++) {
 				float theta = (6.2831853f/section_size) * i;
-				RadVecForSection = CurPos+ RadiusVector * cos(theta) + (glm::cross(Dir, RadiusVector)) * sin(theta) + Dir * (glm::dot(Dir, RadiusVector)) * (1 - cos(theta));
-				skeleton_vertices.push_back(RadVecForSection);
+				RadVecForSection = CurPos + (RadiusVector * cos(theta) + (glm::cross(Dir, RadiusVector)) * sin(theta) + Dir * (glm::dot(Dir, RadiusVector)) * (1 - cos(theta)));
+				skin_vertices.push_back(Vertex{ RadVecForSection, glm::vec3(0,0,0), curColor*cur_shade, glm::vec2(0,0)});
+				cur_shade += shade_change;
 			}
+			//generate skin indices
+			generateIndicesForBranch(skin_indices, last_skin_ind, cur_skin_ind, section_size);
+			//upd last skin ind
+			last_skin_ind = cur_skin_ind;
+			break;
 		case leaf:
 			//rule data
 			length = currentRule.data[0];
@@ -164,12 +194,24 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			//apply data
 			//skel vetices
 			CurPos += Dir*length;
-			skeleton_vertices.push_back(Vertex{ CurPos, glm::vec3(0,0,0),curColor });
+			skeleton_vertices.push_back(Vertex{ CurPos, glm::vec3(0,0,0),curColor, glm::vec2(0,0) });
 			//skel indices
-			skeleton_indices.push_back(last_skel_ind);
+			skeleton_indices.push_back(last_skel_ind); 
 			skeleton_indices.push_back(++cur_skel_ind);
 			last_skel_ind = cur_skel_ind;
 
+
+			//skin cur ind
+			cur_skin_ind = (section_size * cur_skel_ind) - (section_size - 1) * leaf_num;
+			//skin vertices
+			skin_vertices.push_back(Vertex{ CurPos, glm::vec3(0,0,0), curColor, glm::vec2(0,0) });
+			//generate skin indices
+			generateIndicesForLeaf(skin_indices, last_skin_ind, cur_skin_ind, section_size);
+			//upd last skin ind
+			last_skin_ind = cur_skin_ind;
+
+			//num of leaf
+			leaf_num++;
 			break;
 		case rotate:
 			angle_x = generateAnglesInRange(currentRule.data[0], currentRule.data[1]);
@@ -177,7 +219,7 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			angle_z = generateAnglesInRange(currentRule.data[4], currentRule.data[5]);
 			Rotation = glm::quat(glm::vec3(glm::radians(angle_x), glm::radians(angle_y), glm::radians(angle_z)));
 			Dir = glm::rotate(Rotation, Dir);
-			std::cout << "Rotate " << Dir.x << ' ' << Dir.y << ' ' << Dir.z << std::endl;
+			// std::cout << "Rotate " << Dir.x << ' ' << Dir.y << ' ' << Dir.z << std::endl;
 			break;
 		default:
 			break;
@@ -357,5 +399,11 @@ Mesh MeshGenerator::getSkeletonMesh() {
 
 Mesh MeshGenerator::getSkinMesh() {
 	std::vector<Texture> textures;
+	/*std::cout << "Skin vertices " << skin_vertices.size() << std::endl;
+	for (int i = 0; i < skin_vertices.size(); i++)
+		std::cout << skin_vertices[i].position.x << ' ' << skin_vertices[i].position.y << ' ' << skin_vertices[i].position.z << std::endl;
+	std::cout << "Skin indices" << skin_vertices.size() << std::endl;
+	for (int i = 0; i < skin_indices.size(); i++)
+		std::cout << skin_indices[i]<< ' ' ;*/
 	return Mesh(skin_vertices, skin_indices, textures);
 }

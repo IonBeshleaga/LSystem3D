@@ -16,7 +16,9 @@ struct stack_data {
 	glm::vec3 pos;
 	glm::vec3 radius;
 	glm::vec3 dir;
-	int indice;
+	int skel_indice;
+	int skin_indice;
+	int level;
 };
 
 class MeshGenerator {
@@ -31,7 +33,7 @@ public:
 	std::vector<Vertex> skeleton_vertices;
 	std::vector<GLuint> skeleton_indices;
 
-	int section_size = 3;
+	int section_size = 4;
 	float radius = 1;
 	float radius_change = 1;
 

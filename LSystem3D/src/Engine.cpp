@@ -74,12 +74,12 @@ void Engine::Run() {
 	//Gen Models
 	lsystem->GenerateLSystem();
 	meshGen->GenerateMesh(lsystem->getLSystem());
-
+	std::cout << "Engine:	Lsystem: " << lsystem->getLSystem() << std::endl;
 	glm::mat4 modelMatrix = glm::mat4(1.f);
 	models["skeleton"] = model_object{ meshGen->getSkeletonMesh(), modelMatrix, GL_LINES };
-	//modelMatrix = glm::mat4(1);
-	//modelMatrix = glm::translate(modelMatrix, glm::vec3(6, 0, 0));
-	//models["skin"] = model_object{ meshGen->getSkinMesh(), modelMatrix, GL_TRIANGLES };
+	modelMatrix = glm::mat4(1);
+	modelMatrix = glm::translate(modelMatrix, glm::vec3(10, 0, 0));
+	models["skin"] = model_object{ meshGen->getSkinMesh(), modelMatrix, GL_TRIANGLES };
 
 	//ImGui
 	/*IMGUI_CHECKVERSION();
