@@ -35,6 +35,8 @@ public:
 	void Draw();
 
 	void Run();
+private:
+	void generateModels();
 };
 
 #endif

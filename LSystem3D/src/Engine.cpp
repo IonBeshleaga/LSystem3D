@@ -41,25 +41,27 @@ void Engine::Update(float dt) {
 
 void Engine::Draw() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	/*
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
-	*/
 	
 	for (auto it : models) {
 		shader->setMat4f("modelMatrix", 1, GL_FALSE, glm::value_ptr(it.second.modelMatrix));
 		it.second.mesh.Draw(*shader, *camera, it.second.drawingType);
 	}
-	/*	
+		
 	ImGui::Begin("Window");
-	ImGui::Text("Hello Text");
+	ImGui::Text("LSystem setting");
+	ImGui::InputInt("Iteration", &lsystem->ls_iteration);
+	ImGui::Text("Mesh setting");
+	ImGui::InputInt("Section size", &meshGen->section_size);
+	ImGui::InputFloat("Radius", &meshGen->radius);
+	ImGui::InputFloat("Radius Change", &meshGen->radius_change);
+	if (ImGui::Button("Generate")) {
+		generateModels();
+	}
 	ImGui::End();
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	*/
-	
+		
 	window->swapBuffers();
 
 
@@ -72,22 +74,14 @@ void Engine::Run() {
 	float deltaTime;
 
 	//Gen Models
-	lsystem->GenerateLSystem();
-	meshGen->GenerateMesh(lsystem->getLSystem());
-	std::cout << "Engine:	Lsystem: " << lsystem->getLSystem() << std::endl;
-	glm::mat4 modelMatrix = glm::mat4(1.f);
-	models["skeleton"] = model_object{ meshGen->getSkeletonMesh(), modelMatrix, GL_LINES };
-	modelMatrix = glm::mat4(1);
-	modelMatrix = glm::translate(modelMatrix, glm::vec3(10, 0, 0));
-	models["skin"] = model_object{ meshGen->getSkinMesh(), modelMatrix, GL_TRIANGLES };
-
+	generateModels();
 	//ImGui
-	/*IMGUI_CHECKVERSION();
+	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	ImGui::StyleColorsDark();
 	ImGui_ImplGlfw_InitForOpenGL(window->window, true);
-	ImGui_ImplOpenGL3_Init("#version 330");*/
+	ImGui_ImplOpenGL3_Init("#version 330");
 	//opengl sets
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.26, 0.26, 0.28, 1);
@@ -97,12 +91,30 @@ void Engine::Run() {
 		current_time = glfwGetTime();
 		deltaTime = current_time - last_time;
 		last_time = current_time;
-		//if (!io.WantCaptureMouse) {
-		ProccesInput(deltaTime);
-		//	io.MouseDrawCursor = false;
-		//}
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		if (!io.WantCaptureMouse) {
+			ProccesInput(deltaTime);
+		}
 		Update(deltaTime);
 		Draw();
 		window->pollEvents();
 	}
+}
+
+
+
+void Engine::generateModels() {
+	lsystem->GenerateLSystem();
+	meshGen->GenerateMesh(lsystem->getLSystem());
+	std::cout << "Engine:	Lsystem: " << lsystem->getLSystem() << std::endl;
+	glm::mat4 modelMatrix = glm::mat4(1.f);
+	models["skeleton"] = model_object{ meshGen->getSkeletonMesh(), modelMatrix, GL_LINES };
+	modelMatrix = glm::mat4(1);
+	modelMatrix = glm::translate(modelMatrix, glm::vec3(10, 0, 0));
+	models["skin"] = model_object{ meshGen->getSkinMesh(), modelMatrix, GL_TRIANGLES };
+
 }

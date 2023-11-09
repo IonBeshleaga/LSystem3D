@@ -98,6 +98,10 @@ void MeshGenerator::load_mesh_configuration(std::string mesh_config_path, std::s
 
 //MAIN GEN FUNCTION
 void MeshGenerator::GenerateMesh(std::string lsystem) {
+	skeleton_vertices.clear();
+	skeleton_indices.clear();
+	skin_vertices.clear();
+	skin_indices.clear();
 	float length = 0;
 	float angle_x, angle_y, angle_z;
 	glm::vec3 curColor = glm::vec3(0,0,0);
@@ -141,7 +145,7 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			if (currentRule.data[0] == save) {
 				stk.push({ CurPos, RadiusVector, Dir, last_skel_ind ,last_skin_ind, tree_level });
 				tree_level++;
-				RadiusVector.x = (radius_change / tree_level) * radius;
+				RadiusVector.x = pow(radius_change, (tree_level-1)) * radius;
 			}
 			else {
 				CurPos = stk.top().pos;
