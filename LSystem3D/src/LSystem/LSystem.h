@@ -27,6 +27,8 @@ public:
 	~LSystem();
 
 	void load_lsystem_configuration(std::string lsystem_config_path);
+	void setRulesConfiguration(RulesConfiguration rconfig);
+	RulesConfiguration getRulesConfiguration();
 	void GenerateLSystem();
 	std::string getLSystem();
 

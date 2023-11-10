@@ -24,6 +24,9 @@ public:
 	LSystem* lsystem;
 	MeshGenerator* meshGen;
 	
+	MeshConfiguration CurMeshConfiguration;
+	RulesConfiguration CurRulesConfiguration;
+
 	std::map<std::string, model_object> models;
 public:
 	Engine();
@@ -37,6 +40,8 @@ public:
 	void Run();
 private:
 	void generateModels();
+	void setMeshConfig();
+	void setRulesConfig();
 };
 
 #endif

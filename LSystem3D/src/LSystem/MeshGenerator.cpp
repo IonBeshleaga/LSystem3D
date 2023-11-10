@@ -156,7 +156,7 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 				tree_level = stk.top().level;
 				stk.pop();
 				tree_level++;
-				RadiusVector.x = (radius_change / tree_level) * radius;
+				RadiusVector.x = pow(radius_change, (tree_level - 1)) * radius;
 			}
 			break;
 		case branch:
@@ -410,4 +410,12 @@ Mesh MeshGenerator::getSkinMesh() {
 	for (int i = 0; i < skin_indices.size(); i++)
 		std::cout << skin_indices[i]<< ' ' ;*/
 	return Mesh(skin_vertices, skin_indices, textures);
+}
+
+void MeshGenerator::setMeshConfiguration(MeshConfiguration meshConfiguration) {
+	mconfig = meshConfiguration;
+}
+
+MeshConfiguration MeshGenerator::getMeshConfiguration() {
+	return mconfig;
 }

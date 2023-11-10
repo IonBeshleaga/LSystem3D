@@ -14,6 +14,10 @@ Engine::Engine() {
 	lsystem = new LSystem("res/test.wconfig");
 	meshGen = new MeshGenerator("res/test.mconfig", "res/test.cconfig");
 
+
+	CurRulesConfiguration = lsystem->getRulesConfiguration();
+	CurMeshConfiguration = meshGen->getMeshConfiguration();
+
 }
 
 Engine::~Engine() {
@@ -48,12 +52,27 @@ void Engine::Draw() {
 	}
 		
 	ImGui::Begin("Window");
-	ImGui::Text("LSystem setting");
-	ImGui::InputInt("Iteration", &lsystem->ls_iteration);
-	ImGui::Text("Mesh setting");
-	ImGui::InputInt("Section size", &meshGen->section_size);
-	ImGui::InputFloat("Radius", &meshGen->radius);
-	ImGui::InputFloat("Radius Change", &meshGen->radius_change);
+	if (ImGui::CollapsingHeader("LSystem setting")) {
+		ImGui::InputInt("Iteration", &lsystem->ls_iteration);
+		if (ImGui::TreeNode("Rules")) {
+			char c[3];  c[1] = '\n'; c[2] = '\0';
+			for (auto it : CurRulesConfiguration.wrules) {
+				const char s = it.first;
+				c[0] = s;
+				ImGui::Text(c);
+				for (int i = 0; i < it.second.rules.size(); i++) {
+					std::string label = "Rule " + std::to_string(i);
+					ImGui::InputText(label.c_str(), it.second.rules[i]);
+				}
+			}
+			ImGui::TreePop();
+		}
+	}
+	if (ImGui::CollapsingHeader("Mesh setting")) {
+		ImGui::InputInt("Section size", &meshGen->section_size);
+		ImGui::InputFloat("Radius", &meshGen->radius);
+		ImGui::InputFloat("Radius Change", &meshGen->radius_change);
+	}
 	if (ImGui::Button("Generate")) {
 		generateModels();
 	}
@@ -108,6 +127,8 @@ void Engine::Run() {
 
 
 void Engine::generateModels() {
+	setMeshConfig();
+	setRulesConfig();
 	lsystem->GenerateLSystem();
 	meshGen->GenerateMesh(lsystem->getLSystem());
 	std::cout << "Engine:	Lsystem: " << lsystem->getLSystem() << std::endl;
@@ -117,4 +138,12 @@ void Engine::generateModels() {
 	modelMatrix = glm::translate(modelMatrix, glm::vec3(10, 0, 0));
 	models["skin"] = model_object{ meshGen->getSkinMesh(), modelMatrix, GL_TRIANGLES };
 
+}
+
+
+void Engine::setMeshConfig() {
+	lsystem->setRulesConfiguration(CurRulesConfiguration);
+}
+void Engine::setRulesConfig() {
+	meshGen->setMeshConfiguration(CurMeshConfiguration);
 }

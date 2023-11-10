@@ -43,3 +43,10 @@ void LSystem::load_lsystem_configuration(std::string lsystem_config_path) {
 	lsystem_word = axiom;
 }
 
+void LSystem::setRulesConfiguration(RulesConfiguration rulesConfiguration) {
+	rconfig = rulesConfiguration;
+}
+
+RulesConfiguration LSystem::getRulesConfiguration() {
+	return rconfig;
+}

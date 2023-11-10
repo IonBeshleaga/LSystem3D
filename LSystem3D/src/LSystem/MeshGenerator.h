@@ -46,7 +46,9 @@ public:
 	~MeshGenerator();
 
 	void load_mesh_configuration(std::string mesh_config_path, std::string color_config_path);
+	void setMeshConfiguration(MeshConfiguration meshConfiguration);
 	void GenerateMesh(std::string lsystem);
+	MeshConfiguration getMeshConfiguration();
 	Mesh getSkeletonMesh();
 	Mesh getSkinMesh();
 };
