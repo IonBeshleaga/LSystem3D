@@ -60,9 +60,12 @@ void Engine::Draw() {
 				const char s = it.first;
 				c[0] = s;
 				ImGui::Text(c);
-				for (int i = 0; i < it.second.rules.size(); i++) {
+				for (int i = 1; i <= it.second.rules.size(); i++) {
+					char inputText[100] = {};
+					strncpy(inputText, it.second.rules[i].c_str(), sizeof(inputText) - 1);
 					std::string label = "Rule " + std::to_string(i);
-					ImGui::InputText(label.c_str(), it.second.rules[i]);
+					ImGui::InputText(label.c_str(), inputText, sizeof(inputText));
+					//it.second.rules[i] = std::string(inputText);
 				}
 			}
 			ImGui::TreePop();
