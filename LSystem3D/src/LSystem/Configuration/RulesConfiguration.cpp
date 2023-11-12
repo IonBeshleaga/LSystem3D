@@ -25,8 +25,10 @@ std::string RulesConfiguration::getWRule(char symbol) {
 
 	
 	int slot;
-	for (slot = 0; slot < c.size()-2; slot++) {
-		if ((c[slot] <= r) && (r < c[slot + 1])) break;
+	float cur_chance = 0;
+	for (slot = 0; slot < c.size(); slot++) {
+		cur_chance += c[slot];
+		if (r <= cur_chance) break;
 	}
 
 
@@ -39,7 +41,6 @@ void RulesConfiguration::load_config(std::string path) {
 	std::ifstream in(path);
 	
 	int num_of_sym, num_of_rules;
-	float chance;
 	char symbol;
 	std::vector<std::string> rules;
 	std::vector<float> chances;
@@ -54,13 +55,11 @@ void RulesConfiguration::load_config(std::string path) {
 		in >> num_of_rules;
 
 		rules.clear(); chances.clear();
-		rules.resize(num_of_rules); chances.resize(num_of_rules+1);
-		chances[0] = 0;
-
+		rules.resize(num_of_rules); chances.resize(num_of_rules);
+		float f;
 		for (int k = 0; k < num_of_rules; k++) {
 			in >> rules[k];
-			in >> chance;
-			chances[k + 1] = chances[k]+chance;
+			in >> chances[k];
 			
 		}
 
@@ -70,4 +69,3 @@ void RulesConfiguration::load_config(std::string path) {
 
 
 }
-

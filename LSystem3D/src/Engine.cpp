@@ -1,5 +1,14 @@
 #include "Engine.h"
 
+namespace ImGui
+{
+	// ImGui::InputText() with std::string
+	// Because text input needs dynamic resizing, we need to setup a callback to grow the capacity
+	IMGUI_API bool  InputText(const char* label, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
+	IMGUI_API bool  InputTextMultiline(const char* label, std::string* str, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
+	IMGUI_API bool  InputTextWithHint(const char* label, const char* hint, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
+}
+
 Engine::Engine() {
 	srand(time(NULL));
 	int window_width = 1200;
@@ -59,13 +68,18 @@ void Engine::Draw() {
 			for (auto it : CurRulesConfiguration.wrules) {
 				const char s = it.first;
 				c[0] = s;
-				ImGui::Text(c);
-				for (int i = 1; i <= it.second.rules.size(); i++) {
-					char inputText[100] = {};
-					strncpy(inputText, it.second.rules[i].c_str(), sizeof(inputText) - 1);
-					std::string label = "Rule " + std::to_string(i);
-					ImGui::InputText(label.c_str(), inputText, sizeof(inputText));
-					//it.second.rules[i] = std::string(inputText);
+				if (ImGui::TreeNode(c)) {
+
+					for (int i = 0; i < it.second.rules.size(); i++) {
+						
+
+						std::string labelr = "Rule " + std::to_string(i + 1);
+						std::string labelc = "Chance " + std::to_string(i + 1);
+						ImGui::InputText(labelr.c_str(), &CurRulesConfiguration.wrules[s].rules[i]);
+						ImGui::InputFloat(labelc.c_str(), &CurRulesConfiguration.wrules[s].chances[i]);
+						//it.second.rules[i] = std::string(inputText);
+					}
+					ImGui::TreePop();
 				}
 			}
 			ImGui::TreePop();

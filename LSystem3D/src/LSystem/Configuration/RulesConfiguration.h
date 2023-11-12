@@ -27,7 +27,7 @@ public:
 	~RulesConfiguration();
 
 	std::string getWRule(char symbol);
-
+	
 private:
 	void load_config(std::string path);
 };
