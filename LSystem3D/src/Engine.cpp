@@ -75,9 +75,29 @@ void Engine::Draw() {
 
 						std::string labelr = "Rule " + std::to_string(i + 1);
 						std::string labelc = "Chance " + std::to_string(i + 1);
+						std::string button_text = "Delete Rule " + std::to_string(i + 1);
 						ImGui::InputText(labelr.c_str(), &CurRulesConfiguration.wrules[s].rules[i]);
 						ImGui::InputFloat(labelc.c_str(), &CurRulesConfiguration.wrules[s].chances[i]);
+						if (ImGui::Button(button_text.c_str())) {
+
+							std::cout << "Deleted" << std::endl;
+							CurRulesConfiguration.wrules[s].chances.erase(CurRulesConfiguration.wrules[s].chances.begin()+i);
+							CurRulesConfiguration.wrules[s].rules.erase(CurRulesConfiguration.wrules[s].rules.begin() + i);
+						
+						}
 						//it.second.rules[i] = std::string(inputText);
+					}
+
+					static std::string add_rule;
+					static float add_chance;
+					ImGui::InputText("Input new rule", &add_rule);
+					ImGui::InputFloat("Input new chance", &add_chance);
+					if (ImGui::Button("Add rule")) {
+						CurRulesConfiguration.wrules[s].chances.push_back(add_chance);
+						CurRulesConfiguration.wrules[s].rules.push_back(add_rule);
+					}
+					if (ImGui::Button("Delete this Symbol")) {
+						CurRulesConfiguration.wrules.erase(s);
 					}
 					ImGui::TreePop();
 				}
