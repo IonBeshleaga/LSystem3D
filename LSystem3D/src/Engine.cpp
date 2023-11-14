@@ -63,6 +63,7 @@ void Engine::Draw() {
 	ImGui::Begin("Window");
 	if (ImGui::CollapsingHeader("LSystem setting")) {
 		ImGui::InputInt("Iteration", &lsystem->ls_iteration);
+		ImGui::InputText("Axiom", &lsystem->axiom);
 		bool deleteSymbol = false;
 		if (ImGui::TreeNode("Rules")) {
 			char c[3];  c[1] = '\n'; c[2] = '\0';
@@ -111,9 +112,22 @@ void Engine::Draw() {
 					it++;
 				}
 			}
+			
+			static std::string inputNewCaracter;
+			ImGui::InputText("New Symbol", &inputNewCaracter);
+			if (inputNewCaracter.length() > 1) inputNewCaracter.resize(1);
+
+			if (ImGui::Button("Add new Symbol")) {
+				std::vector<std::string> rules(1); rules[0] = inputNewCaracter[0];
+				std::vector<float> chances = { 100 };
+				CurRulesConfiguration.wrules.insert(std::make_pair(inputNewCaracter[0], WRule{ rules, chances }));
+			}
+
+
 			ImGui::TreePop();
 			
 		}
+
 	}
 	if (ImGui::CollapsingHeader("Mesh setting")) {
 		ImGui::InputInt("Section size", &meshGen->section_size);
