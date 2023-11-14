@@ -63,14 +63,15 @@ void Engine::Draw() {
 	ImGui::Begin("Window");
 	if (ImGui::CollapsingHeader("LSystem setting")) {
 		ImGui::InputInt("Iteration", &lsystem->ls_iteration);
+		bool deleteSymbol = false;
 		if (ImGui::TreeNode("Rules")) {
 			char c[3];  c[1] = '\n'; c[2] = '\0';
-			for (auto it : CurRulesConfiguration.wrules) {
-				const char s = it.first;
+			for (auto it = CurRulesConfiguration.wrules.begin(); it != CurRulesConfiguration.wrules.end();) {
+				const char s = it->first;
 				c[0] = s;
 				if (ImGui::TreeNode(c)) {
 
-					for (int i = 0; i < it.second.rules.size(); i++) {
+					for (int i = 0; i < it->second.rules.size(); i++) {
 						
 
 						std::string labelr = "Rule " + std::to_string(i + 1);
@@ -97,12 +98,21 @@ void Engine::Draw() {
 						CurRulesConfiguration.wrules[s].rules.push_back(add_rule);
 					}
 					if (ImGui::Button("Delete this Symbol")) {
-						CurRulesConfiguration.wrules.erase(s);
+						deleteSymbol = true;;
 					}
 					ImGui::TreePop();
+					
+				}
+				if (deleteSymbol) {
+					CurRulesConfiguration.wrules.erase(it++);
+					deleteSymbol = false;
+				}
+				else {
+					it++;
 				}
 			}
 			ImGui::TreePop();
+			
 		}
 	}
 	if (ImGui::CollapsingHeader("Mesh setting")) {
