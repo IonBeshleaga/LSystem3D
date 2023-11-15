@@ -61,51 +61,93 @@ void Engine::Draw() {
 	}
 		
 	ImGui::Begin("Window");
-	if (ImGui::CollapsingHeader("LSystem setting")) {
-		ImGui::InputInt("Iteration", &lsystem->ls_iteration);
-		ImGui::InputText("Axiom", &lsystem->axiom);
-		bool deleteSymbol = false;
-		if (ImGui::TreeNode("Rules")) {
+	
+	ImGui::InputInt("Iteration", &lsystem->ls_iteration);
+	ImGui::InputText("Axiom", &lsystem->axiom);
+	bool deleteSymbol = false;
+	if (ImGui::TreeNode("Alhpabet")) {
 			char c[3];  c[1] = '\n'; c[2] = '\0';
 			for (auto it = CurRulesConfiguration.wrules.begin(); it != CurRulesConfiguration.wrules.end();) {
 				const char s = it->first;
 				c[0] = s;
 				if (ImGui::TreeNode(c)) {
+					if (ImGui::TreeNode("LSystem Rules")) {
+						for (int i = 0; i < it->second.rules.size(); i++) {
 
-					for (int i = 0; i < it->second.rules.size(); i++) {
-						
 
-						std::string labelr = "Rule " + std::to_string(i + 1);
-						std::string labelc = "Chance " + std::to_string(i + 1);
-						std::string button_text = "Delete Rule " + std::to_string(i + 1);
-						ImGui::InputText(labelr.c_str(), &CurRulesConfiguration.wrules[s].rules[i]);
-						ImGui::InputFloat(labelc.c_str(), &CurRulesConfiguration.wrules[s].chances[i]);
-						if (ImGui::Button(button_text.c_str())) {
+							std::string labelr = "Rule " + std::to_string(i + 1);
+							std::string labelc = "Chance " + std::to_string(i + 1);
+							std::string button_text = "Delete Rule " + std::to_string(i + 1);
+							
+							ImGui::InputText(labelr.c_str(), &CurRulesConfiguration.wrules[s].rules[i]);
+							ImGui::InputFloat(labelc.c_str(), &CurRulesConfiguration.wrules[s].chances[i]);
+							if (ImGui::Button(button_text.c_str())) {
 
-							std::cout << "Deleted" << std::endl;
-							CurRulesConfiguration.wrules[s].chances.erase(CurRulesConfiguration.wrules[s].chances.begin()+i);
-							CurRulesConfiguration.wrules[s].rules.erase(CurRulesConfiguration.wrules[s].rules.begin() + i);
-						
+								std::cout << "Deleted" << std::endl;
+								CurRulesConfiguration.wrules[s].chances.erase(CurRulesConfiguration.wrules[s].chances.begin() + i);
+								CurRulesConfiguration.wrules[s].rules.erase(CurRulesConfiguration.wrules[s].rules.begin() + i);
+
+							}
+							//it.second.rules[i] = std::string(inputText);
 						}
-						//it.second.rules[i] = std::string(inputText);
+
+						static std::string add_rule;
+						static float add_chance;
+						ImGui::InputText("Input new rule", &add_rule);
+						ImGui::InputFloat("Input new chance", &add_chance);
+						if (ImGui::Button("Add rule")) {
+							CurRulesConfiguration.wrules[s].chances.push_back(add_chance);
+							CurRulesConfiguration.wrules[s].rules.push_back(add_rule);
+						}
+						ImGui::TreePop();
+					}
+					if (ImGui::TreeNode("Type of Symbol")) {
+						switch (CurMeshConfiguration.mrules[s].type)
+						{
+						case stack:
+							ImGui::Text("Type: Stack");
+							static int radio = CurMeshConfiguration.mrules[s].data[0];
+								
+							ImGui::RadioButton("Save", &radio, save);
+							ImGui::RadioButton("Load", &radio, load);
+
+							CurMeshConfiguration.mrules[s].data[0] = radio;
+
+							break;
+						case branch:
+							ImGui::Text("Type: Branch");
+							ImGui::InputFloat("Length", &CurMeshConfiguration.mrules[s].data[0]);
+							break;
+						case leaf:
+							ImGui::Text("Type: Leaf");
+							ImGui::InputFloat("Length", &CurMeshConfiguration.mrules[s].data[0]);
+							break;
+						case rotate:
+							ImGui::Text("Type: Rotation");
+							ImGui::DragFloatRange2("X range", &CurMeshConfiguration.mrules[s].data[0], &CurMeshConfiguration.mrules[s].data[1], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+							ImGui::DragFloatRange2("Y range", &CurMeshConfiguration.mrules[s].data[2], &CurMeshConfiguration.mrules[s].data[3], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+							ImGui::DragFloatRange2("Z range", &CurMeshConfiguration.mrules[s].data[4], &CurMeshConfiguration.mrules[s].data[5], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+							break;
+						default:
+							break;
+						}
+						ImGui::TreePop();
 					}
 
-					static std::string add_rule;
-					static float add_chance;
-					ImGui::InputText("Input new rule", &add_rule);
-					ImGui::InputFloat("Input new chance", &add_chance);
-					if (ImGui::Button("Add rule")) {
-						CurRulesConfiguration.wrules[s].chances.push_back(add_chance);
-						CurRulesConfiguration.wrules[s].rules.push_back(add_rule);
-					}
 					if (ImGui::Button("Delete this Symbol")) {
-						deleteSymbol = true;;
+						deleteSymbol = true;
 					}
 					ImGui::TreePop();
 					
 				}
+				
 				if (deleteSymbol) {
+					if (CurMeshConfiguration.crules.find(s) != CurMeshConfiguration.crules.end())
+						CurMeshConfiguration.crules.erase(s);
+
+					CurMeshConfiguration.mrules.erase(s);
 					CurRulesConfiguration.wrules.erase(it++);
+
 					deleteSymbol = false;
 				}
 				else {
@@ -128,12 +170,12 @@ void Engine::Draw() {
 			
 		}
 
-	}
-	if (ImGui::CollapsingHeader("Mesh setting")) {
-		ImGui::InputInt("Section size", &meshGen->section_size);
-		ImGui::InputFloat("Radius", &meshGen->radius);
-		ImGui::InputFloat("Radius Change", &meshGen->radius_change);
-	}
+	
+
+	ImGui::InputInt("Section size", &meshGen->section_size);
+	ImGui::InputFloat("Radius", &meshGen->radius);
+	ImGui::InputFloat("Radius Change", &meshGen->radius_change);
+
 	if (ImGui::Button("Generate")) {
 		generateModels();
 	}
