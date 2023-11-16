@@ -65,10 +65,10 @@ void Engine::Draw() {
 	ImGui::InputInt("Iteration", &lsystem->ls_iteration);
 	ImGui::InputText("Axiom", &lsystem->axiom);
 	bool deleteSymbol = false;
-	if (ImGui::TreeNode("Alhpabet")) {
-			char c[3];  c[1] = '\n'; c[2] = '\0';
-			for (auto it = CurRulesConfiguration.wrules.begin(); it != CurRulesConfiguration.wrules.end();) {
-				const char s = it->first;
+	ImGui::Text("Alphabet");
+	//if (ImGui::TreeNode("Alhpabet")) {
+		
+			/*
 				c[0] = s;
 				if (ImGui::TreeNode(c)) {
 					if (ImGui::TreeNode("LSystem Rules")) {
@@ -153,22 +153,31 @@ void Engine::Draw() {
 				else {
 					it++;
 				}
+			}*/
+			std::vector<const char*> selectSymbol(CurRulesConfiguration.wrules.size());
+			int i = 0;
+			for (auto it = CurRulesConfiguration.wrules.begin(); it != CurRulesConfiguration.wrules.end(); it++) {
+				std::string s; s.resize(2, it->first);
+				const char* c = s.c_str();
+				selectSymbol[i++] = c;
+				std::cout << c << std::endl;
 			}
+			static int curSymbol = 0;
 			
+			ImGui::Combo("Symbol", &curSymbol, selectSymbol.data(), CurRulesConfiguration.wrules.size());
 			static std::string inputNewCaracter;
 			static MRuleType inputNewType;
-			static std::vector<float> inputNewData;
-			static int curItem;
-			const char* select[] = { "branch", "leaf", "stack", "rotate" };
-			
+			static std::vector<float> inputNewData(1,0);
+			static int curItem = 0;
+			const char* select[] = { "stack", "leaf", "branch", "rotate" };
 			ImGui::InputText("New Symbol", &inputNewCaracter);
 			if (inputNewCaracter.length() > 1) inputNewCaracter.resize(1);
 			if (ImGui::Combo("Type", &curItem, select, 4)) {
 				switch (curItem) {
 				case 0:
-					inputNewType = branch;
+					inputNewType = stack;
 					inputNewData.resize(1);
-					inputNewData[0] = 1;
+					inputNewData[0] = 0;
 					break;
 				case 1:
 					inputNewType = leaf;
@@ -176,9 +185,9 @@ void Engine::Draw() {
 					inputNewData[0] = 1;
 					break;
 				case 2:
-					inputNewType = stack;
+					inputNewType = branch;
 					inputNewData.resize(1);
-					inputNewData[0] = 0;
+					inputNewData[0] = 1;
 					break;
 				case 3:
 					inputNewType = rotate;
@@ -226,12 +235,12 @@ void Engine::Draw() {
 			}
 
 
-			ImGui::TreePop();
+		/*	ImGui::TreePop();
 			
-		}
+		}*/
 
 	
-
+		ImGui::Text("Mesh setting");
 	ImGui::InputInt("Section size", &meshGen->section_size);
 	ImGui::InputFloat("Radius", &meshGen->radius);
 	ImGui::InputFloat("Radius Change", &meshGen->radius_change);
