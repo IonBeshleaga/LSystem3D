@@ -156,13 +156,73 @@ void Engine::Draw() {
 			}
 			
 			static std::string inputNewCaracter;
+			static MRuleType inputNewType;
+			static std::vector<float> inputNewData;
+			static int curItem;
+			const char* select[] = { "branch", "leaf", "stack", "rotate" };
+			
 			ImGui::InputText("New Symbol", &inputNewCaracter);
 			if (inputNewCaracter.length() > 1) inputNewCaracter.resize(1);
+			if (ImGui::Combo("Type", &curItem, select, 4)) {
+				switch (curItem) {
+				case 0:
+					inputNewType = branch;
+					inputNewData.resize(1);
+					inputNewData[0] = 1;
+					break;
+				case 1:
+					inputNewType = leaf;
+					inputNewData.resize(1);
+					inputNewData[0] = 1;
+					break;
+				case 2:
+					inputNewType = stack;
+					inputNewData.resize(1);
+					inputNewData[0] = 0;
+					break;
+				case 3:
+					inputNewType = rotate;
+					inputNewData.resize(6);
+					inputNewData[0] = 45; inputNewData[1] = 45; 
+					inputNewData[2] = 0; inputNewData[3] = 0;
+					inputNewData[4] = 0; inputNewData[5] = 0;
+					break;
+				}
+			}
+			switch (inputNewType)
+			{
+			case stack:
+				static int radio = inputNewData[0];
 
+				ImGui::RadioButton("Save", &radio, save);
+				ImGui::RadioButton("Load", &radio, load);
+
+				inputNewData[0] = radio;
+
+				break;
+			case branch:
+				ImGui::InputFloat("Length", &inputNewData[0]);
+				break;
+			case leaf:
+				ImGui::InputFloat("Length", &inputNewData[0]);
+				break;
+			case rotate:
+				ImGui::DragFloatRange2("X range", &inputNewData[0], &inputNewData[1], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+				ImGui::DragFloatRange2("Y range", &inputNewData[2], &inputNewData[3], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+				ImGui::DragFloatRange2("Z range", &inputNewData[4], &inputNewData[5], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+				break;
+			default:
+				break;
+			}
 			if (ImGui::Button("Add new Symbol")) {
 				std::vector<std::string> rules(1); rules[0] = inputNewCaracter[0];
+				
+				std::vector < glm::vec3> colors = { glm::vec3(1,1,1) };
 				std::vector<float> chances = { 100 };
+				
 				CurRulesConfiguration.wrules.insert(std::make_pair(inputNewCaracter[0], WRule{ rules, chances }));
+				CurMeshConfiguration.mrules.insert(std::make_pair(inputNewCaracter[0], MRule{ inputNewType, inputNewData}));
+				CurMeshConfiguration.crules.insert(std::make_pair(inputNewCaracter[0], CRule{ colors, chances}));
 			}
 
 
