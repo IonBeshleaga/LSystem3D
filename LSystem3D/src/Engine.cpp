@@ -154,25 +154,81 @@ void Engine::Draw() {
 					it++;
 				}
 			}*/
-			std::vector<const char*> selectSymbol(CurRulesConfiguration.wrules.size());
+			//ALPHABET
+			static std::string selectSymbols;
+			selectSymbols.resize(2 * CurRulesConfiguration.wrules.size());
+			static int curSymbolItem = 0;
+			static char curSymbol;
 			int i = 0;
 			for (auto it = CurRulesConfiguration.wrules.begin(); it != CurRulesConfiguration.wrules.end(); it++) {
-				std::string s; s.resize(2, it->first);
-				const char* c = s.c_str();
-				selectSymbol[i++] = c;
-				std::cout << c << std::endl;
+				selectSymbols[i * 2] = it->first;
+				selectSymbols[(i * 2) + 1] = '\0';
+				i++;
+			}			
+			ImGui::Combo("Symbol", &curSymbolItem, selectSymbols.c_str(), CurRulesConfiguration.wrules.size());
+			curSymbol = selectSymbols[curSymbolItem * 2];
+			for (int i = 0; i < CurRulesConfiguration.wrules[curSymbol].rules.size(); i++) {
+				std::string labelr = "Rule " + std::to_string(i + 1);
+				std::string labelc = "Chance " + std::to_string(i + 1);
+				std::string button_text = "Delete Rule " + std::to_string(i + 1);
+
+				ImGui::InputText(labelr.c_str(), &CurRulesConfiguration.wrules[curSymbol].rules[i]);
+				ImGui::InputFloat(labelc.c_str(), &CurRulesConfiguration.wrules[curSymbol].chances[i]);
+				if (ImGui::Button(button_text.c_str())) {
+
+					std::cout << "Deleted" << std::endl;
+					CurRulesConfiguration.wrules[curSymbol].chances.erase(CurRulesConfiguration.wrules[curSymbol].chances.begin() + i);
+					CurRulesConfiguration.wrules[curSymbol].rules.erase(CurRulesConfiguration.wrules[curSymbol].rules.begin() + i);
+
+				}
+				//it.second.rules[i] = std::string(inputText);
 			}
-			static int curSymbol = 0;
-			
-			ImGui::Combo("Symbol", &curSymbol, selectSymbol.data(), CurRulesConfiguration.wrules.size());
+			static std::string add_rule;
+			static float add_chance;
+			ImGui::InputText("Input new rule", &add_rule);
+			ImGui::InputFloat("Input new chance", &add_chance);
+			if (ImGui::Button("Add rule")) {
+				CurRulesConfiguration.wrules[curSymbol].chances.push_back(add_chance);
+				CurRulesConfiguration.wrules[curSymbol].rules.push_back(add_rule);
+			}
+			switch (CurMeshConfiguration.mrules[curSymbol].type)
+			{
+			case stack:
+				ImGui::Text("Type: Stack");
+				static int radio = CurMeshConfiguration.mrules[curSymbol].data[0];
+
+				ImGui::RadioButton("Save", &radio, save);
+				ImGui::RadioButton("Load", &radio, load);
+
+				CurMeshConfiguration.mrules[curSymbol].data[0] = radio;
+
+				break;
+			case branch:
+				ImGui::Text("Type: Branch");
+				ImGui::InputFloat("Length", &CurMeshConfiguration.mrules[curSymbol].data[0]);
+				break;
+			case leaf:
+				ImGui::Text("Type: Leaf");
+				ImGui::InputFloat("Length", &CurMeshConfiguration.mrules[curSymbol].data[0]);
+				break;
+			case rotate:
+				ImGui::Text("Type: Rotation");
+				ImGui::DragFloatRange2("X range", &CurMeshConfiguration.mrules[curSymbol].data[0], &CurMeshConfiguration.mrules[curSymbol].data[1], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+				ImGui::DragFloatRange2("Y range", &CurMeshConfiguration.mrules[curSymbol].data[2], &CurMeshConfiguration.mrules[curSymbol].data[3], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+				ImGui::DragFloatRange2("Z range", &CurMeshConfiguration.mrules[curSymbol].data[4], &CurMeshConfiguration.mrules[curSymbol].data[5], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+				break;
+			default:
+				break;
+			}
+			//NEW SYMBOL
 			static std::string inputNewCaracter;
 			static MRuleType inputNewType;
 			static std::vector<float> inputNewData(1,0);
 			static int curItem = 0;
-			const char* select[] = { "stack", "leaf", "branch", "rotate" };
+			std::vector<const char*> select = { "stack", "leaf", "branch", "rotate" };
 			ImGui::InputText("New Symbol", &inputNewCaracter);
 			if (inputNewCaracter.length() > 1) inputNewCaracter.resize(1);
-			if (ImGui::Combo("Type", &curItem, select, 4)) {
+			if (ImGui::Combo("Type", &curItem, select.data(), 4)) {
 				switch (curItem) {
 				case 0:
 					inputNewType = stack;
