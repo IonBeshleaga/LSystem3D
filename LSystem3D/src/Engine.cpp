@@ -155,148 +155,158 @@ void Engine::Draw() {
 				}
 			}*/
 			//ALPHABET
-			static std::string selectSymbols;
-			selectSymbols.resize(2 * CurRulesConfiguration.wrules.size());
-			static int curSymbolItem = 0;
-			static char curSymbol;
-			int i = 0;
-			for (auto it = CurRulesConfiguration.wrules.begin(); it != CurRulesConfiguration.wrules.end(); it++) {
-				selectSymbols[i * 2] = it->first;
-				selectSymbols[(i * 2) + 1] = '\0';
-				i++;
-			}			
-			ImGui::Combo("Symbol", &curSymbolItem, selectSymbols.c_str(), CurRulesConfiguration.wrules.size());
-			curSymbol = selectSymbols[curSymbolItem * 2];
-			for (int i = 0; i < CurRulesConfiguration.wrules[curSymbol].rules.size(); i++) {
-				std::string labelr = "Rule " + std::to_string(i + 1);
-				std::string labelc = "Chance " + std::to_string(i + 1);
-				std::string button_text = "Delete Rule " + std::to_string(i + 1);
+			
+	//GET ALL SYMBOLS
+	static std::string selectSymbols;
+	selectSymbols.resize(2 * CurRulesConfiguration.wrules.size());
+	static int curSymbolItem = 0;
+	static char curSymbol;
+	int i = 0;
+	for (auto it = CurRulesConfiguration.wrules.begin(); it != CurRulesConfiguration.wrules.end(); it++) {
+		selectSymbols[i * 2] = it->first;
+		selectSymbols[(i * 2) + 1] = '\0';
+		i++;
+	}	
+	// COMBO WITH SYMBOLS
+	ImGui::Combo("Symbol", &curSymbolItem, selectSymbols.c_str(), CurRulesConfiguration.wrules.size());
+	// RULES FO SYMBOLS 
+	curSymbol = selectSymbols[curSymbolItem * 2];
+	for (int i = 0; i < CurRulesConfiguration.wrules[curSymbol].rules.size(); i++) {
+		std::string labelr = "Rule " + std::to_string(i + 1);
+		std::string labelc = "Chance " + std::to_string(i + 1);
+		std::string button_text = "Delete Rule " + std::to_string(i + 1);
 
-				ImGui::InputText(labelr.c_str(), &CurRulesConfiguration.wrules[curSymbol].rules[i]);
-				ImGui::InputFloat(labelc.c_str(), &CurRulesConfiguration.wrules[curSymbol].chances[i]);
-				if (ImGui::Button(button_text.c_str())) {
+		ImGui::InputText(labelr.c_str(), &CurRulesConfiguration.wrules[curSymbol].rules[i]);
+		ImGui::InputFloat(labelc.c_str(), &CurRulesConfiguration.wrules[curSymbol].chances[i]);
+		if (ImGui::Button(button_text.c_str())) {
 
-					std::cout << "Deleted" << std::endl;
-					CurRulesConfiguration.wrules[curSymbol].chances.erase(CurRulesConfiguration.wrules[curSymbol].chances.begin() + i);
-					CurRulesConfiguration.wrules[curSymbol].rules.erase(CurRulesConfiguration.wrules[curSymbol].rules.begin() + i);
+			std::cout << "Deleted" << std::endl;
+			CurRulesConfiguration.wrules[curSymbol].chances.erase(CurRulesConfiguration.wrules[curSymbol].chances.begin() + i);
+			CurRulesConfiguration.wrules[curSymbol].rules.erase(CurRulesConfiguration.wrules[curSymbol].rules.begin() + i);
 
-				}
-				//it.second.rules[i] = std::string(inputText);
-			}
-			static std::string add_rule;
-			static float add_chance;
-			ImGui::InputText("Input new rule", &add_rule);
-			ImGui::InputFloat("Input new chance", &add_chance);
-			if (ImGui::Button("Add rule")) {
-				CurRulesConfiguration.wrules[curSymbol].chances.push_back(add_chance);
-				CurRulesConfiguration.wrules[curSymbol].rules.push_back(add_rule);
-			}
-			switch (CurMeshConfiguration.mrules[curSymbol].type)
-			{
-			case stack:
-				ImGui::Text("Type: Stack");
-				static int radio = CurMeshConfiguration.mrules[curSymbol].data[0];
+		}
+		//it.second.rules[i] = std::string(inputText);
+	}
+	// ADD RULES FOR SYMBOL
+	static std::string add_rule;
+	static float add_chance;
+	ImGui::InputText("Input new rule", &add_rule);
+	ImGui::InputFloat("Input new chance", &add_chance);
+	if (ImGui::Button("Add rule")) {
+		CurRulesConfiguration.wrules[curSymbol].chances.push_back(add_chance);
+		CurRulesConfiguration.wrules[curSymbol].rules.push_back(add_rule);
+	}
+	// RULES TYPE AND DATA
+	
+	switch (CurMeshConfiguration.mrules[curSymbol].type)
+	{
+	case stack:
+		ImGui::Text("Type: Stack");
+		static int radio_stack_type;
+		radio_stack_type = CurMeshConfiguration.mrules[curSymbol].data[0];
 
-				ImGui::RadioButton("Save", &radio, save);
-				ImGui::RadioButton("Load", &radio, load);
+		ImGui::RadioButton("Save##CurentSymbol", &radio_stack_type, save);
+		ImGui::RadioButton("Load##CurentSymbol", &radio_stack_type, load);
 
-				CurMeshConfiguration.mrules[curSymbol].data[0] = radio;
+		CurMeshConfiguration.mrules[curSymbol].data[0] = radio_stack_type;
 
-				break;
-			case branch:
-				ImGui::Text("Type: Branch");
-				ImGui::InputFloat("Length", &CurMeshConfiguration.mrules[curSymbol].data[0]);
-				break;
-			case leaf:
-				ImGui::Text("Type: Leaf");
-				ImGui::InputFloat("Length", &CurMeshConfiguration.mrules[curSymbol].data[0]);
-				break;
-			case rotate:
-				ImGui::Text("Type: Rotation");
-				ImGui::DragFloatRange2("X range", &CurMeshConfiguration.mrules[curSymbol].data[0], &CurMeshConfiguration.mrules[curSymbol].data[1], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
-				ImGui::DragFloatRange2("Y range", &CurMeshConfiguration.mrules[curSymbol].data[2], &CurMeshConfiguration.mrules[curSymbol].data[3], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
-				ImGui::DragFloatRange2("Z range", &CurMeshConfiguration.mrules[curSymbol].data[4], &CurMeshConfiguration.mrules[curSymbol].data[5], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
-				break;
-			default:
-				break;
-			}
-			//NEW SYMBOL
-			static std::string inputNewCaracter;
-			static MRuleType inputNewType;
-			static std::vector<float> inputNewData(1,0);
-			static int curItem = 0;
-			std::vector<const char*> select = { "stack", "leaf", "branch", "rotate" };
-			ImGui::InputText("New Symbol", &inputNewCaracter);
-			if (inputNewCaracter.length() > 1) inputNewCaracter.resize(1);
-			if (ImGui::Combo("Type", &curItem, select.data(), 4)) {
-				switch (curItem) {
-				case 0:
-					inputNewType = stack;
-					inputNewData.resize(1);
-					inputNewData[0] = 0;
-					break;
-				case 1:
-					inputNewType = leaf;
-					inputNewData.resize(1);
-					inputNewData[0] = 1;
-					break;
-				case 2:
-					inputNewType = branch;
-					inputNewData.resize(1);
-					inputNewData[0] = 1;
-					break;
-				case 3:
-					inputNewType = rotate;
-					inputNewData.resize(6);
-					inputNewData[0] = 45; inputNewData[1] = 45; 
-					inputNewData[2] = 0; inputNewData[3] = 0;
-					inputNewData[4] = 0; inputNewData[5] = 0;
-					break;
-				}
-			}
-			switch (inputNewType)
-			{
-			case stack:
-				static int radio = inputNewData[0];
+		break;
+	case branch:
+		ImGui::Text("Type: Branch");
+		ImGui::InputFloat("Length##CurentSymbol", &CurMeshConfiguration.mrules[curSymbol].data[0]);
+		break;
+	case leaf:
+		ImGui::Text("Type: Leaf");
+		ImGui::InputFloat("Length##CurentSymbol", &CurMeshConfiguration.mrules[curSymbol].data[0]);
+		break;
+	case rotate:
+		ImGui::Text("Type: Rotation");
+		ImGui::DragFloatRange2("X range##CurentSymbol", &CurMeshConfiguration.mrules[curSymbol].data[0], &CurMeshConfiguration.mrules[curSymbol].data[1], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+		ImGui::DragFloatRange2("Y range##CurentSymbol", &CurMeshConfiguration.mrules[curSymbol].data[2], &CurMeshConfiguration.mrules[curSymbol].data[3], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+		ImGui::DragFloatRange2("Z range##CurentSymbol", &CurMeshConfiguration.mrules[curSymbol].data[4], &CurMeshConfiguration.mrules[curSymbol].data[5], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+		break;
+	default:
+		break;
+	}
+	//NEW SYMBOL
+	static std::string inputNewCaracter;
+	static MRuleType inputNewType;
+	static std::vector<float> inputNewData(1,0);
+	static int curItem = 0;
+	std::vector<const char*> select = { "stack", "leaf", "branch", "rotate" };
+	ImGui::InputText("New Symbol", &inputNewCaracter);
+	if (inputNewCaracter.length() > 1) inputNewCaracter.resize(1);
+	if (ImGui::Combo("Type", &curItem, select.data(), 4)) {
+		switch (curItem) {
+		case 0:
+			inputNewType = stack;
+			inputNewData.resize(1);
+			inputNewData[0] = 0;
+			break;
+		case 1:
+			inputNewType = leaf;
+			inputNewData.resize(1);
+			inputNewData[0] = 1;
+			break;
+		case 2:
+			inputNewType = branch;
+			inputNewData.resize(1);
+			inputNewData[0] = 1;
+			break;
+		case 3:
+			inputNewType = rotate;
+			inputNewData.resize(6);
+			inputNewData[0] = 45; inputNewData[1] = 45; 
+			inputNewData[2] = 0; inputNewData[3] = 0;
+			inputNewData[4] = 0; inputNewData[5] = 0;
+			break;
+		}
+	}
 
-				ImGui::RadioButton("Save", &radio, save);
-				ImGui::RadioButton("Load", &radio, load);
+	//TYPE FOR NEW SYMBOL
+	switch (inputNewType)
+	{
+	case stack:
+		static int radio_new_stack_type = inputNewData[0];
 
-				inputNewData[0] = radio;
+		ImGui::RadioButton("Save##NewSymbol", &radio_new_stack_type, save);
+		ImGui::RadioButton("Load##NewSymbol", &radio_new_stack_type, load);
 
-				break;
-			case branch:
-				ImGui::InputFloat("Length", &inputNewData[0]);
-				break;
-			case leaf:
-				ImGui::InputFloat("Length", &inputNewData[0]);
-				break;
-			case rotate:
-				ImGui::DragFloatRange2("X range", &inputNewData[0], &inputNewData[1], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
-				ImGui::DragFloatRange2("Y range", &inputNewData[2], &inputNewData[3], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
-				ImGui::DragFloatRange2("Z range", &inputNewData[4], &inputNewData[5], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
-				break;
-			default:
-				break;
-			}
-			if (ImGui::Button("Add new Symbol")) {
-				std::vector<std::string> rules(1); rules[0] = inputNewCaracter[0];
-				
-				std::vector < glm::vec3> colors = { glm::vec3(1,1,1) };
-				std::vector<float> chances = { 100 };
-				
-				CurRulesConfiguration.wrules.insert(std::make_pair(inputNewCaracter[0], WRule{ rules, chances }));
-				CurMeshConfiguration.mrules.insert(std::make_pair(inputNewCaracter[0], MRule{ inputNewType, inputNewData}));
-				CurMeshConfiguration.crules.insert(std::make_pair(inputNewCaracter[0], CRule{ colors, chances}));
-			}
+		inputNewData[0] = radio_new_stack_type;
+
+		break;
+	case branch:
+		ImGui::InputFloat("Length##NewSymbol", &inputNewData[0]);
+		break;
+	case leaf:
+		ImGui::InputFloat("Length##NewSymbol", &inputNewData[0]);
+		break;
+	case rotate:
+		ImGui::DragFloatRange2("X range##NewSymbol", &inputNewData[0], &inputNewData[1], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+		ImGui::DragFloatRange2("Y range##NewSymbol", &inputNewData[2], &inputNewData[3], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+		ImGui::DragFloatRange2("Z range##NewSymbol", &inputNewData[4], &inputNewData[5], 0.25f, -360.f, 360.f, "Min: %.1f", "Max: %.1f ", ImGuiSliderFlags_AlwaysClamp);
+		break;
+	default:
+		break;
+	}
+	if (ImGui::Button("Add new Symbol")) {
+		std::vector<std::string> rules(1); rules[0] = inputNewCaracter[0];
+		
+		std::vector < glm::vec3> colors = { glm::vec3(1,1,1) };
+		std::vector<float> chances = { 100 };
+		
+		CurRulesConfiguration.wrules.insert(std::make_pair(inputNewCaracter[0], WRule{ rules, chances }));
+		CurMeshConfiguration.mrules.insert(std::make_pair(inputNewCaracter[0], MRule{ inputNewType, inputNewData}));
+		CurMeshConfiguration.crules.insert(std::make_pair(inputNewCaracter[0], CRule{ colors, chances}));
+	}
 
 
 		/*	ImGui::TreePop();
 			
 		}*/
 
-	
-		ImGui::Text("Mesh setting");
+	//MESH SETING
+	ImGui::Text("Mesh setting");
 	ImGui::InputInt("Section size", &meshGen->section_size);
 	ImGui::InputFloat("Radius", &meshGen->radius);
 	ImGui::InputFloat("Radius Change", &meshGen->radius_change);
