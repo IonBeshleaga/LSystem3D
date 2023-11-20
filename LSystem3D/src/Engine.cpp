@@ -167,6 +167,7 @@ void Engine::Draw() {
 		selectSymbols[(i * 2) + 1] = '\0';
 		i++;
 	}	
+	
 	// COMBO WITH SYMBOLS
 	ImGui::Combo("Symbol", &curSymbolItem, selectSymbols.c_str(), CurRulesConfiguration.wrules.size());
 	// RULES FO SYMBOLS 
@@ -197,7 +198,6 @@ void Engine::Draw() {
 		CurRulesConfiguration.wrules[curSymbol].rules.push_back(add_rule);
 	}
 	// RULES TYPE AND DATA
-	
 	switch (CurMeshConfiguration.mrules[curSymbol].type)
 	{
 	case stack:
@@ -228,12 +228,42 @@ void Engine::Draw() {
 	default:
 		break;
 	}
+	// COLOR RULES 
+	if (CurMeshConfiguration.mrules[curSymbol].type == branch || CurMeshConfiguration.mrules[curSymbol].type == leaf) {
+		ImGui::Text("Color");
+		for (int i = 0; i < CurMeshConfiguration.crules[curSymbol].color.size(); i++) {
+			std::string label_color= "Color " + std::to_string(i+1)+"##color";
+			std::string label_chance = "Chance " + std::to_string(i + 1) + "##color";
+			std::string button_text = "Delete color " + std::to_string(i + 1) + "##color";
+			ImGui::ColorEdit3(label_color.c_str(), (float*)&CurMeshConfiguration.crules[curSymbol].color[i]);
+			ImGui::InputFloat(label_chance.c_str(), &CurMeshConfiguration.crules[curSymbol].chances[i]);
+			if (ImGui::Button(button_text.c_str())) {
+
+				std::cout << "Deleted" << std::endl;
+				CurMeshConfiguration.crules[curSymbol].chances.erase(CurMeshConfiguration.crules[curSymbol].chances.begin() + i);
+				CurMeshConfiguration.crules[curSymbol].color.erase(CurMeshConfiguration.crules[curSymbol].color.begin() + i);
+
+			}
+		}
+
+		// ADD COLOR
+		static glm::vec3 add_color;
+		static float add_chance_for_color;
+		ImGui::ColorEdit3("Input new color", (float*)&add_color);
+		ImGui::InputFloat("Input new chance##color", &add_chance_for_color);
+		if (ImGui::Button("Add color")) {
+			CurMeshConfiguration.crules[curSymbol].chances.push_back(add_chance_for_color);
+			CurMeshConfiguration.crules[curSymbol].color.push_back(add_color);
+		}
+	}
+
 	//NEW SYMBOL
 	static std::string inputNewCaracter;
 	static MRuleType inputNewType;
 	static std::vector<float> inputNewData(1,0);
 	static int curItem = 0;
 	std::vector<const char*> select = { "stack", "leaf", "branch", "rotate" };
+	ImGui::Spacing();
 	ImGui::InputText("New Symbol", &inputNewCaracter);
 	if (inputNewCaracter.length() > 1) inputNewCaracter.resize(1);
 	if (ImGui::Combo("Type", &curItem, select.data(), 4)) {

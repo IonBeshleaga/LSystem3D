@@ -21,13 +21,15 @@ MRule MeshConfiguration::getMRule(char symbol) {
 }
 glm::vec3 MeshConfiguration::getCRule(char symbol) {
 	float r = (rand() % 10000) / 100.f;
-	
+
 	std::vector<float> c = crules[symbol].chances;
 
 	int slot;
-	for (slot = 0; slot < c.size() - 2; slot++) {
-		if ((c[slot] <= r) && (r < c[slot + 1])) break;
-	}	
+	float cur_chance = 0;
+	for (slot = 0; slot < c.size(); slot++) {
+		cur_chance += c[slot];
+		if (r <= cur_chance) break;
+	}
 
 	return crules[symbol].color[slot];
 }
@@ -88,13 +90,12 @@ void MeshConfiguration::load_color_config(std::string path) {
 		in >> symbol;
 		in >> num_of_colors;
 		colors.clear(); chances.clear();
-		colors.resize(num_of_colors); chances.resize(num_of_colors+1);
-		chances[0] = 0;
+		colors.resize(num_of_colors); chances.resize(num_of_colors);
+		
 
 		for (int k = 0; k < num_of_colors; k++) {
 			in >> colors[k].x >> colors[k].y >> colors[k].z;
-			in >> chance;
-			chances[k + 1] = chances[k] + chance;
+			in >> chances[k];
 			colors[k] /= 255.f;
 		}
 		crules.insert(std::make_pair(symbol, CRule{ colors, chances }));
