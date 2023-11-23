@@ -173,3 +173,39 @@ void MeshConfiguration::load_color_config_from_text(std::string path) {
 	}
 }
 
+
+std::string MeshConfiguration::getColorConfiguration() {
+	std::string result;
+	result += std::to_string(crules.size()) + "\n\n";
+	for (auto it : crules) {
+		result += it.first; result+="\n";
+		result += std::to_string(it.second.color.size()) + "\n";
+		for (int i = 0; i < it.second.color.size(); i++){
+			result += std::to_string(static_cast<int>(it.second.color[i].x * 255)) + " "
+				+ std::to_string(static_cast<int>(it.second.color[i].y * 255)) + " "
+				+ std::to_string(static_cast<int>(it.second.color[i].z * 255)) + "  "
+				+ std::to_string(it.second.chances[i]) + "\n";
+		}
+		result += "\n";
+	}
+
+	return result;
+}
+
+std::string MeshConfiguration::getMeshConfiguration() {
+	std::string result;
+	result += std::to_string(start_pos.x) + " " + std::to_string(start_pos.y) + " " + std::to_string(start_pos.z) + "\n";
+	result += std::to_string(start_angle) + "\n\n";
+
+	result += std::to_string(mrules.size()) + "\n\n";
+	for (auto it : mrules) {
+		result += it.first; result += "\n";
+		result += it.second.type + " ";
+		for (int i = 0; i < it.second.data.size(); i++) {
+			result += std::to_string(it.second.data[i]) + " ";
+		}
+		result += "\n";
+
+	}
+	return result;
+}

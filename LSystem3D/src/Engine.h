@@ -43,6 +43,7 @@ private:
 	void setMeshConfig();
 	void setRulesConfig();
 	void loadConfiguration(std::string path);
+	void DrawImGui();
 };
 
 #endif

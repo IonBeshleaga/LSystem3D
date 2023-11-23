@@ -100,3 +100,22 @@ void RulesConfiguration::load_config_from_file(std::string path) {
 
 
 }
+
+
+std::string RulesConfiguration::getConfiguration() {
+	std::string result;
+	result += std::to_string(iteration) + "\n";
+	result += axiom + "\n";
+	result += std::to_string(wrules.size()) + "\n\n";
+	for (auto it : wrules) {
+		result += it.first; result += "\n";
+		result += std::to_string(it.second.rules.size()) + "\n";
+		for (int i = 0; i < it.second.rules.size(); i++) {
+			result += it.second.rules[i] + "  "
+				+ std::to_string(it.second.chances[i]) + "\n";
+		}
+		result += "\n";
+	}
+
+	return result;
+}

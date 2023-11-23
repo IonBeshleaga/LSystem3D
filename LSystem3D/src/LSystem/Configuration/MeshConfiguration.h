@@ -36,6 +36,8 @@ public:
 	MRule getMRule(char symbol);
 	glm::vec3 getCRule(char symbol);
 
+	std::string getColorConfiguration();
+	std::string getMeshConfiguration();
 private:
 	void load_mesh_config_from_file(std::string path);
 	void load_color_config_from_file(std::string path);

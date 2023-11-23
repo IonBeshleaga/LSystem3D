@@ -143,6 +143,7 @@
     <ClInclude Include="vendor\ImGui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="imgui.ini" />
     <None Include="res\shader.frag" />
     <None Include="res\shader.vert" />
     <None Include="res\test.cconfig" />
