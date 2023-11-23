@@ -42,6 +42,7 @@ private:
 	void generateModels();
 	void setMeshConfig();
 	void setRulesConfig();
+	void loadConfiguration(std::string path);
 };
 
 #endif

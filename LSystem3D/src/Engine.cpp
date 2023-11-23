@@ -20,9 +20,12 @@ Engine::Engine() {
 	camera = new Camera(window_width, window_height, camera_pos);
 	shader = new Shader("res/shader.vert", "res/shader.frag");
 
+	loadConfiguration("res/test.lsconfig");
+
+	/*
 	lsystem = new LSystem("res/test.wconfig");
 	meshGen = new MeshGenerator("res/test.mconfig", "res/test.cconfig");
-
+	*/
 
 	CurRulesConfiguration = lsystem->getRulesConfiguration();
 	CurMeshConfiguration = meshGen->getMeshConfiguration();
@@ -414,4 +417,26 @@ void Engine::setMeshConfig() {
 }
 void Engine::setRulesConfig() {
 	meshGen->setMeshConfiguration(CurMeshConfiguration);
+}
+
+
+void Engine::loadConfiguration(std::string path) {
+	std::ifstream in(path);
+	std::string line;
+	std::vector<std::string> data; 
+	data.resize(3);
+	int cur_file = 0;
+	while (in >> line) {
+		if (line == "#WORD") {
+			cur_file = 0;
+		}else if (line == "#MESH") {
+			cur_file = 1;
+		}else if(line == "#COLOR") {
+			cur_file = 2;
+		}else {
+			data[cur_file] += line + " ";
+		}
+	}
+	lsystem = new LSystem(data[0]);
+	meshGen = new MeshGenerator(data[1], data[2]);
 }

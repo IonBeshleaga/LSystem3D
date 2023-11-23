@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include <fstream>
+#include <sstream>
 #include <glm/glm.hpp>
 
 enum MRuleType { stack = 0, branch, leaf, rotate };
@@ -36,8 +37,11 @@ public:
 	glm::vec3 getCRule(char symbol);
 
 private:
-	void load_mesh_config(std::string path);
-	void load_color_config(std::string path);
+	void load_mesh_config_from_file(std::string path);
+	void load_color_config_from_file(std::string path);
+
+	void load_mesh_config_from_text(std::string text);
+	void load_color_config_from_text(std::string text);
 };
 
 #endif

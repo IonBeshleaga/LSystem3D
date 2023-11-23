@@ -6,6 +6,7 @@
 #include <map>
 #include <stack>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <random>
 #include <iostream>
@@ -29,7 +30,8 @@ public:
 	std::string getWRule(char symbol);
 	
 private:
-	void load_config(std::string path);
+	void load_config_from_file(std::string path);
+	void load_config_from_text(std::string text);
 };
 
 #endif

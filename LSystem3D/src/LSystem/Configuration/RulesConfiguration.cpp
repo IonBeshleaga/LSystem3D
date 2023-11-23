@@ -3,7 +3,7 @@
 
 RulesConfiguration::RulesConfiguration(std::string path) {
 	
-	load_config(path);
+	load_config_from_text(path);
 	
 }
 
@@ -36,8 +36,39 @@ std::string RulesConfiguration::getWRule(char symbol) {
 	return wrules[symbol].rules[slot] ;
 }
 
+void RulesConfiguration::load_config_from_text(std::string text) {
+	std::stringstream in(text);
 
-void RulesConfiguration::load_config(std::string path) {
+	int num_of_sym, num_of_rules;
+	char symbol;
+	std::vector<std::string> rules;
+	std::vector<float> chances;
+
+
+	in >> iteration;
+	in >> axiom;
+	in >> num_of_sym;
+
+	for (int i = 0; i < num_of_sym; i++) {
+		in >> symbol;
+		in >> num_of_rules;
+
+		rules.clear(); chances.clear();
+		rules.resize(num_of_rules); chances.resize(num_of_rules);
+		float f;
+		for (int k = 0; k < num_of_rules; k++) {
+			in >> rules[k];
+			in >> chances[k];
+
+		}
+
+		wrules.insert(std::make_pair(symbol, WRule{ rules, chances }));
+
+	}
+
+}
+
+void RulesConfiguration::load_config_from_file(std::string path) {
 	std::ifstream in(path);
 	
 	int num_of_sym, num_of_rules;
