@@ -45,6 +45,9 @@ void LSystem::load_lsystem_configuration(std::string lsystem_config_path) {
 
 void LSystem::setRulesConfiguration(RulesConfiguration rulesConfiguration) {
 	rconfig = rulesConfiguration;
+	ls_iteration = rconfig.iteration;
+	axiom = rconfig.axiom;
+	lsystem_word = axiom;
 }
 
 RulesConfiguration LSystem::getRulesConfiguration() {

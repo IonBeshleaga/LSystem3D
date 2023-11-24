@@ -27,8 +27,6 @@ Engine::Engine() {
 	meshGen = new MeshGenerator("res/test.mconfig", "res/test.cconfig");
 	*/
 
-	CurRulesConfiguration = lsystem->getRulesConfiguration();
-	CurMeshConfiguration = meshGen->getMeshConfiguration();
 
 }
 
@@ -132,6 +130,9 @@ void Engine::setRulesConfig() {
 
 
 void Engine::loadConfiguration(std::string path) {
+	if (lsystem != NULL) delete lsystem;
+	if (meshGen != NULL) delete meshGen;
+	
 	std::ifstream in(path);
 	std::string line;
 	std::vector<std::string> data; 
@@ -148,8 +149,16 @@ void Engine::loadConfiguration(std::string path) {
 			data[cur_file] += line + " ";
 		}
 	}
+	std::cout << "Hello before lsystem" << std::endl;
 	lsystem = new LSystem(data[0]);
+
+	std::cout << "Hello before meshconfig" << std::endl;
 	meshGen = new MeshGenerator(data[1], data[2]);
+
+	std::cout << "Hello before lsystem getting" << std::endl;
+	CurRulesConfiguration = lsystem->getRulesConfiguration();
+	std::cout << "Hello before meshconfig getting" << std::endl;
+	CurMeshConfiguration = meshGen->getMeshConfiguration();
 }
 
 
@@ -158,8 +167,8 @@ void Engine::DrawImGui() {
 
 	ImGui::Begin("Window");
 
-	ImGui::InputInt("Iteration", &lsystem->ls_iteration);
-	ImGui::InputText("Axiom", &lsystem->axiom);
+	ImGui::InputInt("Iteration", &CurRulesConfiguration.iteration);
+	ImGui::InputText("Axiom", &CurRulesConfiguration.axiom);
 	bool deleteSymbol = false;
 	ImGui::Text("Alphabet");
 
@@ -357,7 +366,7 @@ void Engine::DrawImGui() {
 	}
 
 	static std::string file_save_name;
-	ImGui::InputText("Input file name", &file_save_name);
+	ImGui::InputText("Input save file name", &file_save_name);
 	if (ImGui::Button("Save Configuration")) {
 		std::ofstream out("res/"+file_save_name + ".lsconfig");
 		out << "#WORD" << std::endl;
@@ -368,6 +377,13 @@ void Engine::DrawImGui() {
 		out << CurMeshConfiguration.getColorConfiguration();
 		out.close();
 	}
+
+	static std::string file_load_name;
+	ImGui::InputText("Input load file name", &file_load_name);
+	if (ImGui::Button("Load Configuration")) {
+		loadConfiguration(file_load_name);
+	}
+
 
 	ImGui::End();
 

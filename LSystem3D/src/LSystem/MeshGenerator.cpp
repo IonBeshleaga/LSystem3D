@@ -182,7 +182,7 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			cur_shade = shade;
 			for (int i = 0; i < section_size; i++) {
 				float theta = (6.2831853f/section_size) * i;
-				RadVecForSection = CurPos + (RadiusVector * cos(theta) + (glm::cross(Dir, RadiusVector)) * sin(theta) + Dir * (glm::dot(Dir, RadiusVector)) * (1 - cos(theta)));
+				RadVecForSection = CurPos + (RadiusVector * cos(theta) + (glm::cross(Dir, RadiusVector)) * sin(theta) + Dir * (glm::dot(Dir, RadiusVector)) * (1- cos(theta)));
 				skin_vertices.push_back(Vertex{ RadVecForSection, glm::vec3(0,0,0), curColor*cur_shade, glm::vec2(0,0)});
 				cur_shade += shade_change;
 			}

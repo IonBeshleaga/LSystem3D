@@ -200,7 +200,20 @@ std::string MeshConfiguration::getMeshConfiguration() {
 	result += std::to_string(mrules.size()) + "\n\n";
 	for (auto it : mrules) {
 		result += it.first; result += "\n";
-		result += it.second.type + " ";
+		switch (it.second.type) {
+		case stack:
+			result += "s ";
+			break;
+		case rotate:
+			result += "r ";
+			break;
+		case leaf:
+			result += "l ";
+			break;
+		case branch:
+			result += "b ";
+			break;
+		}
 		for (int i = 0; i < it.second.data.size(); i++) {
 			result += std::to_string(it.second.data[i]) + " ";
 		}
