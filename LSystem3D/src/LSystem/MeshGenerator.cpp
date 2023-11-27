@@ -7,6 +7,7 @@ float generateAnglesInRange(float a, float b) {
 	return a + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (b - a)));
 }
 
+/*
 void generateSection(std::vector<Vertex>& v, glm::vec3 pos, int n, float radius, float cur_angle, float cur_angle_z, glm::vec3 cur_color) {
 	//std::cout << " gen_section() " << std::endl;
 	float cur_in_angle = glm::radians(cur_angle);
@@ -35,16 +36,17 @@ void generateSection(std::vector<Vertex>& v, glm::vec3 pos, int n, float radius,
 		cur_sin = std::sin(cur_in_angle);
 		
 		// radVec = radVec * cos(theta) + (glm::cross(rotAxis, radVec)) * sin(theta) + rotAxis * (glm::dot(rotAxis, radVec))* (1 - cos(theta)); 
-		/*
-		radVec = glm::vec3(radius, 0, 0);
-		radVec = radVec * cur_cos + (glm::cross(dir, radVec) * cur_sin) + dir * (glm::dot(dir, radVec) * (1 - cur_cos));
-		
-		new_pos = pos + radVec;*/
+		//
+		//radVec = glm::vec3(radius, 0, 0);
+		//radVec = radVec * cur_cos + (glm::cross(dir, radVec) * cur_sin) + dir * (glm::dot(dir, radVec) * (1 - cur_cos));
+		//
+		//new_pos = pos + radVec;
 
 		new_pos = pos + glm::vec3(radius * rad_cos_z * cur_cos, radius * rad_sin_z, radius * rad_cos_z * cur_sin);
 		v.push_back({ new_pos, glm::vec3(0,0,0), cur_color*shade, glm::vec2(0.0) });
 	}
 }
+*/
 /*
 void generateIndicesForSection(std::vector<GLuint>& v, int n, int start) {
 	//std::cout << "Hello from ind_sect() " << start << std::endl;
@@ -145,7 +147,8 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			if (currentRule.data[0] == save) {
 				stk.push({ CurPos, RadiusVector, Dir, last_skel_ind ,last_skin_ind, tree_level });
 				tree_level++;
-				RadiusVector.x = pow(radius_change, (tree_level-1)) * radius;
+				RadiusVector = glm::normalize(RadiusVector);
+				RadiusVector *= pow(radius_change, (tree_level-1)) * radius;
 			}
 			else {
 				CurPos = stk.top().pos;
@@ -156,7 +159,8 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 				tree_level = stk.top().level;
 				stk.pop();
 				tree_level++;
-				RadiusVector.x = pow(radius_change, (tree_level - 1)) * radius;
+				RadiusVector = glm::normalize(RadiusVector);
+				RadiusVector *= pow(radius_change, (tree_level - 1)) * radius;
 			}
 			break;
 		case branch:
@@ -184,6 +188,7 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 				float theta = (6.2831853f/section_size) * i;
 				RadVecForSection = CurPos + (RadiusVector * cos(theta) + (glm::cross(Dir, RadiusVector)) * sin(theta) + Dir * (glm::dot(Dir, RadiusVector)) * (1- cos(theta)));
 				skin_vertices.push_back(Vertex{ RadVecForSection, glm::vec3(0,0,0), curColor*cur_shade, glm::vec2(0,0)});
+				
 				cur_shade += shade_change;
 			}
 			//generate skin indices
@@ -223,6 +228,8 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			angle_z = generateAnglesInRange(currentRule.data[4], currentRule.data[5]);
 			Rotation = glm::quat(glm::vec3(glm::radians(angle_x), glm::radians(angle_y), glm::radians(angle_z)));
 			Dir = glm::rotate(Rotation, Dir);
+			Rotation = glm::quat(glm::vec3(glm::radians(angle_x-90), glm::radians(angle_y), glm::radians(angle_z)));
+			RadiusVector = glm::rotate(Rotation, RadiusVector);
 			// std::cout << "Rotate " << Dir.x << ' ' << Dir.y << ' ' << Dir.z << std::endl;
 			break;
 		default:
