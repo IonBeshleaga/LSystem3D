@@ -34,6 +34,25 @@ glm::vec3 MeshConfiguration::getCRule(char symbol) {
 	return crules[symbol].color[slot];
 }
 
+
+void MeshConfiguration::deleteMRule(char symbol) {
+	mrules.erase(symbol);
+	if (mrules.empty()) {
+		std::vector<float> v(1, 1);
+		mrules.insert(std::make_pair('F', MRule{ branch, v }));
+	}
+}
+
+void MeshConfiguration::deleteCRule(char symbol) {
+	crules.erase(symbol);
+	if (crules.empty()) {
+
+		std::vector<glm::vec3> colors(1, glm::vec3(0,0,0));
+		std::vector<float> chances(1,100);
+		crules.insert(std::make_pair('F', CRule{ colors, chances }));
+	}
+}
+
 void MeshConfiguration::load_mesh_config_from_file(std::string path) {
 	std::ifstream in(path);
 

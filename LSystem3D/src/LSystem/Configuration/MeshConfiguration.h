@@ -35,6 +35,9 @@ public:
 
 	MRule getMRule(char symbol);
 	glm::vec3 getCRule(char symbol);
+	void deleteMRule(char symbol);
+	void deleteCRule(char symbol);
+
 
 	std::string getColorConfiguration();
 	std::string getMeshConfiguration();

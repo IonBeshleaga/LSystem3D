@@ -236,6 +236,13 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			break;
 		}
 	}
+
+	skeleton_vertices[0].color = skeleton_vertices[1].color;
+	cur_shade = 0;
+	for (int i = 0; i < section_size; i++) {
+		skin_vertices[i].color = skeleton_vertices[1].color * cur_shade;
+		cur_shade += shade_change;
+	}
 }
 /*void MeshGenerator::GenerateMesh(std::string lsystem) {
 	//std::cout << "Starterd mesh generating" << std::endl;

@@ -9,6 +9,8 @@ namespace ImGui
 	IMGUI_API bool  InputTextWithHint(const char* label, const char* hint, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
 }
 
+
+//SET UP  
 Engine::Engine() {
 	srand(time(NULL));
 	int window_width = 1200;
@@ -21,7 +23,8 @@ Engine::Engine() {
 	shader = new Shader("res/shader.vert", "res/shader.frag");
 
 	loadConfiguration("res/test.lsconfig");
-
+	shell = false;
+	skyColor = glm::vec3(0.26, 0.26, 0.28);
 	/*
 	lsystem = new LSystem("res/test.wconfig");
 	meshGen = new MeshGenerator("res/test.mconfig", "res/test.cconfig");
@@ -38,9 +41,9 @@ Engine::~Engine() {
 	delete lsystem;
 	delete meshGen;
 
-	/*ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();*/
+	ImGui::DestroyContext();
 }
 
 
@@ -49,18 +52,30 @@ void Engine::ProccesInput(float dt) {
 }
 
 void Engine::Update(float dt) {
+	//update window and camera sizes
 	glm::vec2 win_size = window->getSize();
 	camera->Update(45, 0.1, 100, win_size.x, win_size.y);
 }
 
 void Engine::Draw() {
+	glClearColor(skyColor.x, skyColor.y, skyColor.z, 1);
+	//std::cout << skyColor.x << ' ' << skyColor.y << ' ' << skyColor.z << '\n';
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+	/*
 	for (auto it : models) {
 		shader->setMat4f("modelMatrix", 1, GL_FALSE, glm::value_ptr(it.second.modelMatrix));
 		it.second.mesh.Draw(*shader, *camera, it.second.drawingType);
-	}
+	}*/
 		
+	if (shell) {
+		shader->setMat4f("modelMatrix", 1, GL_FALSE, glm::value_ptr(models["skin"].modelMatrix));
+		models["skin"].mesh.Draw(*shader, *camera, models["skin"].drawingType);
+	}
+	else {
+		shader->setMat4f("modelMatrix", 1, GL_FALSE, glm::value_ptr(models["skeleton"].modelMatrix));
+		models["skeleton"].mesh.Draw(*shader, *camera, models["skeleton"].drawingType);
+	}
+
 	DrawImGui();
 		
 	window->swapBuffers();
@@ -74,7 +89,7 @@ void Engine::Run() {
 
 	//Gen Models
 	generateModels();
-	//ImGui
+	//Init ImGui
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -83,18 +98,22 @@ void Engine::Run() {
 	ImGui_ImplOpenGL3_Init("#version 330");
 	//opengl sets
 	glEnable(GL_DEPTH_TEST);
-	glClearColor(0.26, 0.26, 0.28, 1);
 	
-	//loop
+	
+	//main loop
 	while (!window->isShouldClose()) {
+
+		//update dt
 		current_time = glfwGetTime();
 		deltaTime = current_time - last_time;
 		last_time = current_time;
 
+		//imgui update
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
+		//If ImGui is not processed than process input for camera
 		if (!io.WantCaptureMouse) {
 			ProccesInput(deltaTime);
 		}
@@ -107,15 +126,16 @@ void Engine::Run() {
 
 
 void Engine::generateModels() {
+	//set configurations
 	setMeshConfig();
 	setRulesConfig();
+	//generate lsystem
 	lsystem->GenerateLSystem();
+	//generate mesh based on lsystem
 	meshGen->GenerateMesh(lsystem->getLSystem());
 	std::cout << "Engine:	Lsystem: " << lsystem->getLSystem() << std::endl;
 	glm::mat4 modelMatrix = glm::mat4(1.f);
 	models["skeleton"] = model_object{ meshGen->getSkeletonMesh(), modelMatrix, GL_LINES };
-	modelMatrix = glm::mat4(1);
-	modelMatrix = glm::translate(modelMatrix, glm::vec3(10, 0, 0));
 	models["skin"] = model_object{ meshGen->getSkinMesh(), modelMatrix, GL_TRIANGLES };
 
 }
@@ -167,14 +187,17 @@ void Engine::DrawImGui() {
 
 	ImGui::Begin("Window");
 
+	ImGui::ColorEdit3("SkyColor", (float*)&skyColor);
+
+
 	ImGui::InputInt("Iteration", &CurRulesConfiguration.iteration);
 	ImGui::InputText("Axiom", &CurRulesConfiguration.axiom);
 	bool deleteSymbol = false;
 	ImGui::Text("Alphabet");
 
-	//ALPHABET
+	//------------------ ALPHABET -------------------------
 
-	//GET ALL SYMBOLS
+ 	//GET ALL SYMBOLS
 	static std::string selectSymbols;
 	selectSymbols.resize(2 * CurRulesConfiguration.wrules.size());
 	static int curSymbolItem = 0;
@@ -188,8 +211,19 @@ void Engine::DrawImGui() {
 
 	// COMBO WITH SYMBOLS
 	ImGui::Combo("Symbol", &curSymbolItem, selectSymbols.c_str(), CurRulesConfiguration.wrules.size());
+	
+	
 	// RULES FO SYMBOLS 
 	curSymbol = selectSymbols[curSymbolItem * 2];
+	// DELETE SYMBOL
+	if (ImGui::Button("Delete Symbol")) {
+		CurRulesConfiguration.deleteWRule(curSymbol);
+		CurMeshConfiguration.deleteMRule(curSymbol);
+		CurMeshConfiguration.deleteCRule(curSymbol);
+		auto it = CurRulesConfiguration.wrules.begin();
+		curSymbol = it->first;
+	}
+
 	for (int i = 0; i < CurRulesConfiguration.wrules[curSymbol].rules.size(); i++) {
 		std::string labelr = "Rule " + std::to_string(i + 1);
 		std::string labelc = "Chance " + std::to_string(i + 1);
@@ -246,7 +280,7 @@ void Engine::DrawImGui() {
 	default:
 		break;
 	}
-	// COLOR RULES 
+	// ----------------------------------------- COLOR RULES --------------------------- 
 	if (CurMeshConfiguration.mrules[curSymbol].type == branch || CurMeshConfiguration.mrules[curSymbol].type == leaf) {
 		ImGui::Text("Color");
 		for (int i = 0; i < CurMeshConfiguration.crules[curSymbol].color.size(); i++) {
@@ -275,14 +309,9 @@ void Engine::DrawImGui() {
 		}
 	}
 
-	// DELETE SYMBOL
-	if (ImGui::Button("Delete Symbol")) {
-		CurRulesConfiguration.wrules.erase(curSymbol);
-		CurMeshConfiguration.mrules.erase(curSymbol);
-		CurMeshConfiguration.crules.erase(curSymbol);
-	}
+	
 
-	//NEW SYMBOL
+	//-------------------------------------- NEW SYMBOL ------------------------------------------------------
 	static std::string inputNewCaracter;
 	static MRuleType inputNewType;
 	static std::vector<float> inputNewData(1, 0);
@@ -355,16 +384,21 @@ void Engine::DrawImGui() {
 		CurMeshConfiguration.crules.insert(std::make_pair(inputNewCaracter[0], CRule{ colors, chances }));
 	}
 
-	//MESH SETING
+	// ----------------------------------- MESH SETING -----------------------------------------
 	ImGui::Text("Mesh setting");
 	ImGui::InputInt("Section size", &meshGen->section_size);
 	ImGui::InputFloat("Radius", &meshGen->radius);
 	ImGui::InputFloat("Radius Change", &meshGen->radius_change);
 
+	ImGui::Checkbox("Shell", &shell);
+
+
+	// ---------------------------------- GENERATE ----------------------------------------------
 	if (ImGui::Button("Generate")) {
 		generateModels();
 	}
 
+	// ---------------------------------- SAVE CONFIGURATION ------------------------------------
 	static std::string file_save_name;
 	ImGui::InputText("Input save file name", &file_save_name);
 	if (ImGui::Button("Save Configuration")) {
@@ -378,6 +412,7 @@ void Engine::DrawImGui() {
 		out.close();
 	}
 
+	// ---------------------------------- LOAD CONFIGURATION --------------------------------------
 	static std::string file_load_name;
 	ImGui::InputText("Input load file name", &file_load_name);
 	if (ImGui::Button("Load Configuration")) {

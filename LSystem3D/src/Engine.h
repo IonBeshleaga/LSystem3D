@@ -27,6 +27,8 @@ public:
 	MeshConfiguration CurMeshConfiguration;
 	RulesConfiguration CurRulesConfiguration;
 
+	glm::vec3 skyColor;
+	bool shell;
 	std::map<std::string, model_object> models;
 public:
 	Engine();
