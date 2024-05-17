@@ -36,6 +36,7 @@ public:
 	int section_size = 4;
 	float radius = 1;
 	float radius_change = 0.9;
+	float scale = 1;
 
 	std::vector<Vertex> skin_vertices;
 	std::vector<GLuint> skin_indices;

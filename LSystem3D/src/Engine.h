@@ -28,7 +28,7 @@ public:
 	RulesConfiguration CurRulesConfiguration;
 
 	glm::vec3 skyColor;
-	bool shell;
+	std::string modelType;
 	std::map<std::string, model_object> models;
 public:
 	Engine();

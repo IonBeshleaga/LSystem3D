@@ -40,7 +40,7 @@ std::string RulesConfiguration::getWRule(char symbol) {
 void RulesConfiguration::deleteWRule(char symbol) {
 	wrules.erase(symbol);
 	if (wrules.empty()) {
-		std::vector<std::string> rules(1, "A");
+		std::vector<std::string> rules(1, "F");
 		std::vector<float> chances(1,100);
 		wrules.insert(std::make_pair('F', WRule{ rules, chances }));
 	}

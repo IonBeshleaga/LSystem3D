@@ -111,7 +111,7 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 	glm::vec3 CurPos = start_pos;
 	glm::vec3 Dir = glm::vec3(1, 0, 0);
 	glm::vec3 Translate = Dir;
-	glm::vec3 RadiusVector = glm::vec3(radius, 0, 0);
+	glm::vec3 RadiusVector = glm::vec3(radius, 0, 0)*scale;
 	glm::quat Rotation = glm::quat(glm::vec3(0, 0, glm::radians(start_angle)));
 
 	glm::vec3 RadVecForSection;
@@ -171,7 +171,7 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			
 
 			//skel vetices
-			CurPos += Dir*length;
+			CurPos += Dir*length*scale;
 			skeleton_vertices.push_back(Vertex{ CurPos, glm::vec3(0,0,0), curColor, glm::vec2(0,0) });
 			//skel indices
 			skeleton_indices.push_back(last_skel_ind);
@@ -202,7 +202,7 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			curColor = mconfig.getCRule(lsystem[i]);
 			//apply data
 			//skel vetices
-			CurPos += Dir*length;
+			CurPos += Dir*length*scale;
 			skeleton_vertices.push_back(Vertex{ CurPos, glm::vec3(0,0,0),curColor, glm::vec2(0,0) });
 			//skel indices
 			skeleton_indices.push_back(last_skel_ind); 
