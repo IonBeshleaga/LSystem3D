@@ -3,7 +3,7 @@
 
 RulesConfiguration::RulesConfiguration(std::string path) {
 	
-	load_config(path);
+	load_config_from_text(path);
 	
 }
 
@@ -25,8 +25,10 @@ std::string RulesConfiguration::getWRule(char symbol) {
 
 	
 	int slot;
-	for (slot = 0; slot < c.size()-2; slot++) {
-		if ((c[slot] <= r) && (r < c[slot + 1])) break;
+	float cur_chance = 0;
+	for (slot = 0; slot < c.size(); slot++) {
+		cur_chance += c[slot];
+		if (r <= cur_chance) break;
 	}
 
 
@@ -35,11 +37,51 @@ std::string RulesConfiguration::getWRule(char symbol) {
 }
 
 
-void RulesConfiguration::load_config(std::string path) {
+void RulesConfiguration::deleteWRule(char symbol) {
+	wrules.erase(symbol);
+	if (wrules.empty()) {
+		std::vector<std::string> rules(1, "F");
+		std::vector<float> chances(1,100);
+		wrules.insert(std::make_pair('F', WRule{ rules, chances }));
+	}
+}
+
+void RulesConfiguration::load_config_from_text(std::string text) {
+	std::stringstream in(text);
+
+	int num_of_sym, num_of_rules;
+	char symbol;
+	std::vector<std::string> rules;
+	std::vector<float> chances;
+
+
+	in >> iteration;
+	in >> axiom;
+	in >> num_of_sym;
+
+	for (int i = 0; i < num_of_sym; i++) {
+		in >> symbol;
+		in >> num_of_rules;
+
+		rules.clear(); chances.clear();
+		rules.resize(num_of_rules); chances.resize(num_of_rules);
+		float f;
+		for (int k = 0; k < num_of_rules; k++) {
+			in >> rules[k];
+			in >> chances[k];
+
+		}
+
+		wrules.insert(std::make_pair(symbol, WRule{ rules, chances }));
+
+	}
+
+}
+
+void RulesConfiguration::load_config_from_file(std::string path) {
 	std::ifstream in(path);
 	
 	int num_of_sym, num_of_rules;
-	float chance;
 	char symbol;
 	std::vector<std::string> rules;
 	std::vector<float> chances;
@@ -54,13 +96,11 @@ void RulesConfiguration::load_config(std::string path) {
 		in >> num_of_rules;
 
 		rules.clear(); chances.clear();
-		rules.resize(num_of_rules); chances.resize(num_of_rules+1);
-		chances[0] = 0;
-
+		rules.resize(num_of_rules); chances.resize(num_of_rules);
+		float f;
 		for (int k = 0; k < num_of_rules; k++) {
 			in >> rules[k];
-			in >> chance;
-			chances[k + 1] = chances[k]+chance;
+			in >> chances[k];
 			
 		}
 
@@ -71,3 +111,21 @@ void RulesConfiguration::load_config(std::string path) {
 
 }
 
+
+std::string RulesConfiguration::getConfiguration() {
+	std::string result;
+	result += std::to_string(iteration) + "\n";
+	result += axiom + "\n";
+	result += std::to_string(wrules.size()) + "\n\n";
+	for (auto it : wrules) {
+		result += it.first; result += "\n";
+		result += std::to_string(it.second.rules.size()) + "\n";
+		for (int i = 0; i < it.second.rules.size(); i++) {
+			result += it.second.rules[i] + "  "
+				+ std::to_string(it.second.chances[i]) + "\n";
+		}
+		result += "\n";
+	}
+
+	return result;
+}

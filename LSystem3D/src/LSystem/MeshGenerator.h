@@ -14,9 +14,10 @@ struct section {
 
 struct stack_data {
 	glm::vec3 pos;
-	float angle;
-	GLuint skeleton_indice;
-	GLuint skin_indice;
+	glm::vec3 radius;
+	glm::vec3 dir;
+	int skel_indice;
+	int skin_indice;
 	int level;
 };
 
@@ -32,19 +33,23 @@ public:
 	std::vector<Vertex> skeleton_vertices;
 	std::vector<GLuint> skeleton_indices;
 
-	int section_size = 3;
+	int section_size = 4;
 	float radius = 1;
-	float radius_change = 1;
+	float radius_change = 0.9;
+	float scale = 1;
 
 	std::vector<Vertex> skin_vertices;
 	std::vector<GLuint> skin_indices;
 
 public:
 	MeshGenerator();
+	MeshGenerator(std::string mesh_config_path, std::string color_config_path);
 	~MeshGenerator();
 
 	void load_mesh_configuration(std::string mesh_config_path, std::string color_config_path);
+	void setMeshConfiguration(MeshConfiguration meshConfiguration);
 	void GenerateMesh(std::string lsystem);
+	MeshConfiguration getMeshConfiguration();
 	Mesh getSkeletonMesh();
 	Mesh getSkinMesh();
 };

@@ -5,9 +5,11 @@
 #include <map>
 #include <vector>
 #include <fstream>
+#include <sstream>
 #include <glm/glm.hpp>
 
-enum MRuleType { stack, branch, rotate };
+enum MRuleType { stack = 0, branch, leaf, rotate };
+enum StackState { save = 0, load };
 
 struct MRule {
 	MRuleType type;
@@ -33,10 +35,18 @@ public:
 
 	MRule getMRule(char symbol);
 	glm::vec3 getCRule(char symbol);
+	void deleteMRule(char symbol);
+	void deleteCRule(char symbol);
 
+
+	std::string getColorConfiguration();
+	std::string getMeshConfiguration();
 private:
-	void load_mesh_config(std::string path);
-	void load_color_config(std::string path);
+	void load_mesh_config_from_file(std::string path);
+	void load_color_config_from_file(std::string path);
+
+	void load_mesh_config_from_text(std::string text);
+	void load_color_config_from_text(std::string text);
 };
 
 #endif

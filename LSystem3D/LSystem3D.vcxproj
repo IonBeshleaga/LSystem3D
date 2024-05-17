@@ -57,9 +57,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\third_party\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\third_party\include\;$(ProjectDir)\vendor\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -75,9 +76,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\third_party\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\third_party\include\;$(ProjectDir)\vendor\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -92,6 +93,7 @@
   <ItemGroup>
     <ClCompile Include="src\Camera\Camera.cpp" />
     <ClCompile Include="src\EBO\EBO.cpp" />
+    <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\LSystem\Configuration\MeshConfiguration.cpp" />
     <ClCompile Include="src\LSystem\LSystem.cpp" />
     <ClCompile Include="src\LSystem\Configuration\RulesConfiguration.cpp" />
@@ -103,10 +105,22 @@
     <ClCompile Include="src\Texture\Texture.cpp" />
     <ClCompile Include="src\VAO\VAO.cpp" />
     <ClCompile Include="src\VBO\VBO.cpp" />
+    <ClCompile Include="src\Window\Window.cpp" />
+    <ClCompile Include="vendor\ImGui\imgui.cpp" />
+    <ClCompile Include="vendor\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="vendor\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="vendor\ImGui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="vendor\ImGui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="vendor\ImGui\imgui_stdlib.cpp" />
+    <ClCompile Include="vendor\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="vendor\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="vendor\stb\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\LIBS\imgui-master-14-10-2023\imgui-master\misc\cpp\imgui_stdlib.h" />
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\EBO\EBO.h" />
+    <ClInclude Include="src\Engine.h" />
     <ClInclude Include="src\LSystem\Configuration\MeshConfiguration.h" />
     <ClInclude Include="src\LSystem\LSystem.h" />
     <ClInclude Include="src\LSystem\Configuration\RulesConfiguration.h" />
@@ -114,15 +128,28 @@
     <ClInclude Include="src\Model\Mesh.h" />
     <ClInclude Include="src\Model\Model.h" />
     <ClInclude Include="src\ShaderProgram\Shader.h" />
-    <ClCompile Include="src\stb\stb_image.cpp" />
     <ClInclude Include="src\Texture\Texture.h" />
     <ClInclude Include="src\VAO\VAO.h" />
     <ClInclude Include="src\VBO\VBO.h" />
+    <ClInclude Include="src\Window\Window.h" />
+    <ClInclude Include="vendor\filebrowser\imfilebrowser.h" />
+    <ClInclude Include="vendor\ImGui\imconfig.h" />
+    <ClInclude Include="vendor\ImGui\imgui.h" />
+    <ClInclude Include="vendor\ImGui\imgui_impl_glfw.h" />
+    <ClInclude Include="vendor\ImGui\imgui_impl_opengl3.h" />
+    <ClInclude Include="vendor\ImGui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="vendor\ImGui\imgui_internal.h" />
+    <ClInclude Include="vendor\ImGui\imgui_stdlib.h" />
+    <ClInclude Include="vendor\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="vendor\ImGui\imstb_textedit.h" />
+    <ClInclude Include="vendor\ImGui\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="imgui.ini" />
     <None Include="res\shader.frag" />
     <None Include="res\shader.vert" />
     <None Include="res\test.cconfig" />
+    <None Include="res\test.lsconfig" />
     <None Include="res\test.mconfig" />
     <None Include="res\test.wconfig" />
   </ItemGroup>

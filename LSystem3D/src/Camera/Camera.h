@@ -30,12 +30,11 @@ public:
 	float speed = speedNormal;
 	float sensitivity = 10000.f;
 
-	float lastTime, currentTime, deltaTime;
 
 	Camera(int width, int height, glm::vec3 position);
-	void Update(float FOVdeg, float nearPlane, float farPlane);
+	void Update(float FOVdeg, float nearPlane, float farPlanel,float window_width, float window_height);
 	void Matrix(Shader& shader, const char* uniform);
-	void Input(GLFWwindow* window);
+	void Input(GLFWwindow* window,float deltaTime);
 
 };
 
