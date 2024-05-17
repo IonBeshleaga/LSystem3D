@@ -29,7 +29,8 @@ Engine::Engine() {
 	lsystem = new LSystem("res/test.wconfig");
 	meshGen = new MeshGenerator("res/test.mconfig", "res/test.cconfig");
 	*/
-
+	saveFileDialog = ImGui::FileBrowser(ImGuiFileBrowserFlags_EnterNewFilename);
+	loadFileDialog = ImGui::FileBrowser();
 
 }
 
@@ -177,7 +178,17 @@ void Engine::loadConfiguration(std::string path) {
 	CurMeshConfiguration = meshGen->getMeshConfiguration();
 }
 
-
+void Engine::saveConfiguration(std::string path) {
+	
+	std::ofstream out(path + ".lsconfig");
+	out << "#WORD" << std::endl;
+	out << CurRulesConfiguration.getConfiguration();
+	out << "#MESH" << std::endl;
+	out << CurMeshConfiguration.getMeshConfiguration();
+	out << "#COLOR" << std::endl;
+	out << CurMeshConfiguration.getColorConfiguration();
+	out.close();
+}
 
 void Engine::DrawImGui() {
 	
@@ -187,10 +198,11 @@ void Engine::DrawImGui() {
 	static bool newRuleWindow = false;
 	static bool newColorWindow = false;
 	static bool newSymbolWindow = false;
+	// ------------------------ MAIN MENU BAR -------------------------------
 	if(ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("File")) {
-			ImGui::MenuItem("Open", NULL, false, true);
-			ImGui::MenuItem("Save", NULL, false, true);
+			if (ImGui::MenuItem("Save", NULL, false, true))saveFileDialog.Open();
+			if (ImGui::MenuItem("Load", NULL, false, true)) loadFileDialog.Open();
 			ImGui::EndMenu();
 		}
 		if (ImGui::Button("Generate")) {
@@ -201,10 +213,23 @@ void Engine::DrawImGui() {
 		if(ImGui::Button("Settings")) settingsWindow = !settingsWindow;
 		ImGui::EndMainMenuBar();
 	}
-/*	ImGui::Begin("Window");
 
+	// ------------------------ FILE BROWSERS -------------------------------- 
+	saveFileDialog.Display();
+	loadFileDialog.Display();
+
+	if (saveFileDialog.HasSelected())
+	{
+		saveConfiguration(saveFileDialog.GetSelected().string());
+		saveFileDialog.ClearSelected();
+	}
 	
-	*/
+	if (loadFileDialog.HasSelected())
+	{
+		loadConfiguration(loadFileDialog.GetSelected().string());
+		loadFileDialog.ClearSelected();
+	}
+
 
 	//------------------ ALPHABET -------------------------
 
@@ -448,10 +473,10 @@ void Engine::DrawImGui() {
 		ImGui::InputFloat3("Start Position", start_pos);
 		meshGen->start_pos = glm::vec3(start_pos[0], start_pos[1], start_pos[2]);
 		ImGui::SliderFloat("Start Angle", &meshGen->start_angle, -360, 360);
-		ImGui::DragInt("Section Size", &meshGen->section_size, 2,32);
-		ImGui::DragFloat("Radius", &meshGen->radius, 0.1,0.001, 100);
-		ImGui::DragFloat("Radius Change", &meshGen->radius_change, 0.1,0.001, 100);
-		ImGui::DragFloat("Scale", &meshGen->scale, 0.1, 0.001, 100);
+		ImGui::SliderInt("Section Size", &meshGen->section_size, 2,32);
+		ImGui::SliderFloat("Radius", &meshGen->radius, 0.001, 100);
+		ImGui::SliderFloat("Radius Change", &meshGen->radius_change, 0.001, 100);
+		ImGui::SliderFloat("Scale", &meshGen->scale, 0.001, 100);
 		ImGui::Combo("Mesh Type", &curSymbolItem,list , 3);
 		modelType = list[curSymbolItem];
 		
@@ -471,14 +496,7 @@ void Engine::DrawImGui() {
 	static std::string file_save_name;
 	ImGui::InputText("Input save file name", &file_save_name);
 	if (ImGui::Button("Save Configuration")) {
-		std::ofstream out("res/"+file_save_name + ".lsconfig");
-		out << "#WORD" << std::endl;
-		out << CurRulesConfiguration.getConfiguration();
-		out << "#MESH" << std::endl;
-		out << CurMeshConfiguration.getMeshConfiguration();
-		out << "#COLOR" << std::endl;
-		out << CurMeshConfiguration.getColorConfiguration();
-		out.close();
+		
 	}
 
 	// ---------------------------------- LOAD CONFIGURATION --------------------------------------

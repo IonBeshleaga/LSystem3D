@@ -164,6 +164,9 @@
     <ClInclude Include="vendor\ImGui\imgui_stdlib.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="vendor\filebrowser\imfilebrowser.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader.frag" />
@@ -172,6 +175,7 @@
     <None Include="res\test.cconfig" />
     <None Include="res\test.mconfig" />
     <None Include="res\test.lsconfig" />
+    <None Include="imgui.ini" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TASKS.txt" />

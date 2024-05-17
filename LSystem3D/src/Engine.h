@@ -8,6 +8,8 @@
 #include <ImGui/imgui_impl_glfw.h>
 #include <ImGui/imgui_impl_opengl3.h>
 
+#include <filebrowser/imfilebrowser.h>
+
 struct model_object{
 	Mesh mesh;
 	glm::mat4 modelMatrix;
@@ -30,6 +32,9 @@ public:
 	glm::vec3 skyColor;
 	std::string modelType;
 	std::map<std::string, model_object> models;
+
+	ImGui::FileBrowser saveFileDialog;
+	ImGui::FileBrowser loadFileDialog;
 public:
 	Engine();
 	~Engine();
@@ -45,6 +50,7 @@ private:
 	void setMeshConfig();
 	void setRulesConfig();
 	void loadConfiguration(std::string path);
+	void saveConfiguration(std::string path);
 	void DrawImGui();
 };
 
