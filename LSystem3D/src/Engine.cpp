@@ -25,6 +25,7 @@ Engine::Engine() {
 	loadConfiguration("res/test.lsconfig");
 	modelType = "skeleton";
 	skyColor = glm::vec3(0.26, 0.26, 0.28);
+
 	/*
 	lsystem = new LSystem("res/test.wconfig");
 	meshGen = new MeshGenerator("res/test.mconfig", "res/test.cconfig");
@@ -128,7 +129,7 @@ void Engine::generateModels() {
 	lsystem->GenerateLSystem();
 	//generate mesh based on lsystem
 	meshGen->GenerateMesh(lsystem->getLSystem());
-	std::cout << "Engine:	Lsystem: " << lsystem->getLSystem() << std::endl;
+	//std::cout << "Engine:	Lsystem: " << lsystem->getLSystem() << std::endl;
 	glm::mat4 modelMatrix = glm::mat4(1.f);
 	models["skeleton"] = model_object{ meshGen->getSkeletonMesh(), modelMatrix, GL_LINES };
 	models["skin"] = model_object{ meshGen->getSkinMesh(), modelMatrix, GL_TRIANGLES};
@@ -490,24 +491,7 @@ void Engine::DrawImGui() {
 		ImGui::ColorEdit3("SkyColor", (float*)&skyColor);
 		ImGui::End();
 	}
-	/*
-	ImGui::Begin("Window");
-	// ---------------------------------- SAVE CONFIGURATION ------------------------------------
-	static std::string file_save_name;
-	ImGui::InputText("Input save file name", &file_save_name);
-	if (ImGui::Button("Save Configuration")) {
-		
-	}
-
-	// ---------------------------------- LOAD CONFIGURATION --------------------------------------
-	static std::string file_load_name;
-	ImGui::InputText("Input load file name", &file_load_name);
-	if (ImGui::Button("Load Configuration")) {
-		loadConfiguration(file_load_name);
-	}
-
-
-	ImGui::End();*/
+	
 
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

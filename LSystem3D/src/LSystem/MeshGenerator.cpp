@@ -77,6 +77,8 @@ void generateIndicesForLeaf(std::vector<GLuint>& v, GLuint bot_ind, GLuint top_i
 
 }
 
+
+
 MeshGenerator::MeshGenerator() {
 	start_angle = 0;
 	start_pos = glm::vec3(0, 0, 0);
@@ -112,7 +114,8 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 	glm::vec3 Dir = glm::vec3(1, 0, 0); 
 	glm::vec3 Translate = Dir;
 	glm::vec3 RadiusVector = glm::vec3(radius, 0, 0)*scale;
-	glm::quat Rotation = glm::quat(glm::vec3(0,0,glm::radians(start_angle)));
+	glm::mat4 rot_mat = glm::mat4(1);
+
 
 
 	glm::vec3 RadVecForSection;
@@ -126,8 +129,10 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 
 	int leaf_num = 0;
 	int tree_level = 1;
-	Dir =glm::rotate(Rotation,Dir);
 
+	rot_mat = glm::rotate(glm::mat4(1), glm::radians(start_angle), glm::vec3(0, 0, 1));
+	Dir = glm::normalize(glm::rotate(glm::quat(rot_mat), Dir));
+	//std::cout << Dir.x << ' ' << Dir.y << ' ' << Dir.z << '\n';
 	float shade = 0.25f; float cur_shade = shade;  float shade_change = 0.75 / section_size;
 
 	skeleton_vertices.push_back(Vertex{ CurPos });
@@ -227,10 +232,12 @@ void MeshGenerator::GenerateMesh(std::string lsystem) {
 			angle_x = generateAnglesInRange(currentRule.data[0], currentRule.data[1]);
 			angle_y = generateAnglesInRange(currentRule.data[2], currentRule.data[3]);
 			angle_z = generateAnglesInRange(currentRule.data[4], currentRule.data[5]);
-			Rotation = glm::quat(glm::vec3(glm::radians(angle_x), glm::radians(angle_y), glm::radians(angle_z)));
-			Dir = glm::rotate(Rotation,Dir);
-			Rotation = glm::quat(glm::vec3(glm::radians(angle_x-90), glm::radians(angle_y), glm::radians(angle_z)));
-			RadiusVector = glm::rotate(Rotation, RadiusVector);
+			rot_mat = glm::rotate(glm::mat4(1), glm::radians(angle_x), glm::vec3(1, 0, 0));
+			rot_mat = glm::rotate(rot_mat, glm::radians(angle_y), glm::vec3(0, 1, 0)); 
+			rot_mat = glm::rotate(rot_mat, glm::radians(angle_z), glm::vec3(0, 0, 1));
+			Dir = glm::normalize(glm::rotate(glm::quat(rot_mat), Dir));
+			rot_mat = glm::rotate(rot_mat, glm::radians(-90.f), glm::vec3(1, 0, 0)); 
+			RadiusVector = glm::rotate(glm::quat(rot_mat), RadiusVector);
 			// std::cout << "Rotate " << Dir.x << ' ' << Dir.y << ' ' << Dir.z << std::endl;
 			break;
 		default:

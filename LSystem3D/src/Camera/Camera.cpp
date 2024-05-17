@@ -11,8 +11,10 @@ Camera::Camera(int width, int height, glm::vec3 position) {
 void Camera::Update(float FOVdeg, float nearPlane, float farPlane, float window_width, float window_height) {
 	width = window_width;
 	height = window_height;
+	float aspect = (float)width / height;
 	glm::mat4 view = glm::lookAt(Position, Position + Orientation, Up);
-	glm::mat4 proj = glm::perspective(glm::radians(FOVdeg), (float)width / height, nearPlane, farPlane);
+	glm::mat4 proj = glm::perspective(glm::radians(FOVdeg), aspect, nearPlane, farPlane);
+	
 
 	CameraMat = proj * view;
 }
