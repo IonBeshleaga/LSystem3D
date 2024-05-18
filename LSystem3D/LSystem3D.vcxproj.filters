@@ -174,8 +174,15 @@
     <None Include="res\test.wconfig" />
     <None Include="res\test.cconfig" />
     <None Include="res\test.mconfig" />
-    <None Include="res\test.lsconfig" />
+    <None Include="res\first_load.lsconfig" />
     <None Include="imgui.ini" />
+    <None Include="Configurations\koh_test.lsconfig.lsconfig" />
+    <None Include="Configurations\koh_test_2.lsconfig" />
+    <None Include="Configurations\save.lsconfig" />
+    <None Include="Configurations\save_test.lsconfig" />
+    <None Include="Configurations\test_z.lsconfig" />
+    <None Include="Configurations\test_z2.lsconfig" />
+    <None Include="Configurations\z.lsconfig" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TASKS.txt" />
