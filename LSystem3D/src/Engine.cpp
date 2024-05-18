@@ -22,7 +22,7 @@ Engine::Engine() {
 	camera = new Camera(window_width, window_height, camera_pos);
 	shader = new Shader("res/shader.vert", "res/shader.frag");
 
-	loadConfiguration("res/test.lsconfig");
+	loadConfiguration("Configurations/start_load.lsconfig");
 	modelType = "skeleton";
 	skyColor = glm::vec3(0.26, 0.26, 0.28);
 
@@ -31,8 +31,9 @@ Engine::Engine() {
 	meshGen = new MeshGenerator("res/test.mconfig", "res/test.cconfig");
 	*/
 	saveFileDialog = ImGui::FileBrowser(ImGuiFileBrowserFlags_EnterNewFilename);
-	loadFileDialog = ImGui::FileBrowser();
 
+	loadFileDialog = ImGui::FileBrowser();
+	loadFileDialog.SetTypeFilters({ ".lsconfig"});
 }
 
 Engine::~Engine() {
@@ -56,7 +57,7 @@ void Engine::ProccesInput(float dt) {
 void Engine::Update(float dt) {
 	//update window and camera sizes
 	glm::vec2 win_size = window->getSize();
-	camera->Update(45, 0.1, 100, win_size.x, win_size.y);
+	camera->Update(45, 0.1, 200, win_size.x, win_size.y);
 }
 
 void Engine::Draw() {
@@ -134,6 +135,7 @@ void Engine::generateModels() {
 	models["skeleton"] = model_object{ meshGen->getSkeletonMesh(), modelMatrix, GL_LINES };
 	models["skin"] = model_object{ meshGen->getSkinMesh(), modelMatrix, GL_TRIANGLES};
 	models["line_strip"] = model_object{ meshGen->getSkinMesh(), modelMatrix, GL_LINE_STRIP};
+	std::cout << lsystem->getLSystem()<< std::endl;
 
 
 }
@@ -167,15 +169,15 @@ void Engine::loadConfiguration(std::string path) {
 			data[cur_file] += line + " ";
 		}
 	}
-	std::cout << "Hello before lsystem" << std::endl;
+	//std::cout << "Hello before lsystem" << std::endl;
 	lsystem = new LSystem(data[0]);
 
-	std::cout << "Hello before meshconfig" << std::endl;
+	//std::cout << "Hello before meshconfig" << std::endl;
 	meshGen = new MeshGenerator(data[1], data[2]);
 
-	std::cout << "Hello before lsystem getting" << std::endl;
+	//std::cout << "Hello before lsystem getting" << std::endl;
 	CurRulesConfiguration = lsystem->getRulesConfiguration();
-	std::cout << "Hello before meshconfig getting" << std::endl;
+	//std::cout << "Hello before meshconfig getting" << std::endl;
 	CurMeshConfiguration = meshGen->getMeshConfiguration();
 }
 
@@ -458,7 +460,6 @@ void Engine::DrawImGui() {
 			}
 			ImGui::End();
 		}
-
 
 		ImGui::End();
 	}
